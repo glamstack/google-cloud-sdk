@@ -17,8 +17,13 @@ it('can list managed zones', function() {
 it('can create a new zone', function() {
     $testing = new Glamstack\GoogleCloud\ApiClient('gcp_project_1');
     $response = $testing->dns()->managedZone()->create(
-        'testing-zone-3', 'testing-zone-3.example.com.',
-        'private', 'off', 'Testing zone 3 by SDK');
+        [
+            'name' => 'testing-zone-3',
+            'dns_name' => 'testing-zone-3.example.com.',
+            'visibility' => 'private',
+            'dnssec_config_state' => 'off',
+            'description' => 'Testing zone 3 by SDK',
+        ]);
     expect($response->status->code)->toBe(200);
 });
 
