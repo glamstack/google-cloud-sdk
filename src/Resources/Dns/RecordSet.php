@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Log;
 class RecordSet extends BaseClient
 {
 
+    private RecordSetModel $recordSetModel;
+
+    public function __construct(ApiClient $api_client)
+    {
+        parent::__construct($api_client);
+        $this->recordSetModel = new RecordSetModel();
+    }
+
     const RECORD_SET_BODY = ['name', 'ttl', 'type', 'rrdatas'];
 
     public function list(string $managed_zone, array $request_data = []): object|string
