@@ -2,11 +2,10 @@
 
 namespace Glamstack\GoogleCloud\Resources\Dns;
 
-use Faker\Provider\Base;
 use Glamstack\GoogleCloud\Exceptions\RecordSetException;
 use Glamstack\GoogleCloud\ApiClient;
 use Glamstack\GoogleCloud\Resources\BaseClient;
-use Glamstack\GoogleCloud\Resources\Dns\Dns;
+use Glamstack\GoogleCloud\Models\Dns\RecordSetModel;
 use Illuminate\Support\Facades\Log;
 
 class RecordSet extends BaseClient
