@@ -32,7 +32,7 @@ class RecordSet extends BaseClient
      */
     public function create(string $managed_zone, array $request_data = []): object|string
     {
-        $this->verifyRecordSet($request_data);
+        $this->recordSetModel->verifyCreate($request_data);
         return BaseClient::postRequest('/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets', $request_data);
     }
