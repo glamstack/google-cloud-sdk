@@ -7,8 +7,8 @@ use Faker\Provider\Base;
 use Glamstack\GoogleCloud\ApiClient;
 use Glamstack\GoogleCloud\Exceptions\ManagedZoneException;
 use Glamstack\GoogleCloud\Resources\BaseClient;
+use Glamstack\GoogleCloud\Models\Dns\ManagedZoneModel;
 use Illuminate\Support\Facades\Log;
-use Glamstack\GoogleCloud\Resources\Dns\ManagedZoneModel;
 
 class ManagedZone extends BaseClient
 {
