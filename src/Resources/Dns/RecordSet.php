@@ -19,8 +19,6 @@ class RecordSet extends BaseClient
         $this->recordSetModel = new RecordSetModel();
     }
 
-    const RECORD_SET_BODY = ['name', 'ttl', 'type', 'rrdatas'];
-
     public function list(string $managed_zone, array $request_data = []): object|string
     {
         return BaseClient::getRequest('/' . $this->project_id . '/managedZones/' .
@@ -41,29 +39,5 @@ class RecordSet extends BaseClient
     {
         return BaseClient::deleteRequest('/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets/' . $name . '/' . $type);
-    }
-
-    protected function verifyRecordSet(array $record_set){
-        foreach (self::RECORD_SET_BODY as $parameter) {
-            if (!array_key_exists($parameter, $record_set)) {
-                $error_message = 'The ' . $parameter . ' is missing from the ' .
-                    'provided `record_set` array. Please ensure that the ' .
-                    '`record_set` includes the following values: [' .
-                    implode(', ', self::RECORD_SET_BODY) . ']';
-
-                Log::stack((array) config('glamstack-google.auth.log_channels'))
-                    ->critical(
-                        $error_message,
-                        [
-                            'event_type' => 'record-set-required-parameter-missing',
-                            'class' => get_class(),
-                            'status_code' => '501',
-                            'message' => $error_message,
-                            'missing_parameter' => $parameter
-                        ]
-                    );
-                throw RecordSetException::create();
-            }
-        }
     }
 }
