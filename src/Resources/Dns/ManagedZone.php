@@ -2,13 +2,9 @@
 
 namespace Glamstack\GoogleCloud\Resources\Dns;
 
-use Crypto\Base64;
-use Faker\Provider\Base;
 use Glamstack\GoogleCloud\ApiClient;
-use Glamstack\GoogleCloud\Exceptions\ManagedZoneException;
 use Glamstack\GoogleCloud\Resources\BaseClient;
 use Glamstack\GoogleCloud\Models\Dns\ManagedZoneModel;
-use Illuminate\Support\Facades\Log;
 
 class ManagedZone extends BaseClient
 {
