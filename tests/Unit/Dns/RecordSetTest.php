@@ -1,6 +1,8 @@
 <?php
 
 use Glamstack\GoogleCloud\Exceptions\RecordSetException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 it('can reach recordset', function () {
     $testing = new Glamstack\GoogleCloud\ApiClient('gcp_project_1');
