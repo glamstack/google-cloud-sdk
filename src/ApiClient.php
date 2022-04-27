@@ -2,9 +2,7 @@
 
 namespace Glamstack\GoogleCloud;
 
-use Glamstack\GoogleAuth\AuthClient;
 use Glamstack\GoogleCloud\Resources\Dns\Dns;
-use Glamstack\GoogleCloud\Resources\Dns\RecordSet;
 
 class ApiClient
 {
