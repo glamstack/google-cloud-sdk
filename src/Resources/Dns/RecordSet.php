@@ -2,11 +2,9 @@
 
 namespace Glamstack\GoogleCloud\Resources\Dns;
 
-use Glamstack\GoogleCloud\Exceptions\RecordSetException;
 use Glamstack\GoogleCloud\ApiClient;
 use Glamstack\GoogleCloud\Resources\BaseClient;
 use Glamstack\GoogleCloud\Models\Dns\RecordSetModel;
-use Illuminate\Support\Facades\Log;
 
 class RecordSet extends BaseClient
 {
@@ -26,7 +24,10 @@ class RecordSet extends BaseClient
     }
 
     /**
-     * @throws RecordSetException
+     * @param string $managed_zone
+     * @param array  $request_data
+     *
+     * @return object|string
      */
     public function create(string $managed_zone, array $request_data = []): object|string
     {
