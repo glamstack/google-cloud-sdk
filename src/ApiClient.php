@@ -62,13 +62,18 @@ class ApiClient
     }
 
     /**
-     * Set the connection_key class variable. The connection_key variable by default
-     * will be set to `workspace`. This can be overridden when initializing the
-     * SDK with a different connection key which is passed into this function to
-     * set the class variable to the provided key.
+     * Set the connection_key class variable
      *
-     * @param ?string $connection_key (Optional) The connection key to use from the
-     * configuration file.
+     * If no connection_key is provided, the `GOOGLE_AUTH_DEFAULT_CONNECTION`
+     * variable in `.env` is used. If the `.env` variable is not set, the value
+     * is defined in `config/glamstack-google.php` and is set to `workspace` if
+     * not defined since the configuration is shared with the Google Workspace
+     * SDK. This can be overridden when initializing the SDK with a different
+     * connection key which is passed into this function to set the class
+     * variable to the provided key.
+     *
+     * @param ?string $connection_key (Optional) The connection key to use from
+     * the configuration file.
      *
      * @return void
      */
