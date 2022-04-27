@@ -12,6 +12,32 @@ class ApiClient
     public array $connection_config;
     public array $request_headers;
 
+    /**
+     * Initialize a new API Client connection using a connection key or custom
+     * connection configuration array
+     *
+     * @param ?string $connection_key
+     *      The connection key to use from `config/glamstack-google.php` file
+     *      to set the appropriate Google Auth Settings.
+     *
+     * @param array $connection_config
+     *      A custom array of connection configuration key/values. You can use
+     *      either `json_key_array` or `json_key_file`. See the docblock in
+     *      `config/glamstack-google.php` for full documentation.
+     *      ```php
+     *      [
+     *          'project_id' => '123456789012',
+     *          'auth_scopes' => [
+     *              'https://www.googleapis.com/auth/cloud-platform',
+     *              'https://www.googleapis.com/auth/compute'
+     *          ],
+     *          'json_key_array' => {json},
+     *          'json_key_file' => storage('keys/glamstack-google/123456789012.json')
+     *      ]
+     *      ```
+     *
+     * @return ApiClient
+     */
     public function __construct(
         ?string $connection_key = null,
         ?array $connection_config = []
@@ -22,8 +48,8 @@ class ApiClient
             $this->setConnectionKey($connection_key);
             $this->connection_config = [];
         } else {
-            $this->connection_config = $connection_config;
             $this->connection_key = null;
+            $this->connection_config = $connection_config;
         }
 
         // Set the request headers to be used by the API client
