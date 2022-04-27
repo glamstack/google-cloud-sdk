@@ -58,63 +58,6 @@ abstract class BaseClient
 //        $this->auth_token = $this->api_client->auth_token;
 //    }
 
-    //    /**
-    //     * Set the domain class variable. The domain variable by default will be
-    //     * set to the `domain` element of the `workspace` in the configuration file.
-    //     * This can be overridden when initialing the SDK with a different domain
-    //     * which is passed into this function to set the class variable to the
-    //     * provided domain
-    //     *
-    //     * @param ?string $domain (Optional) The domain to use for the Google
-    //     * Workspace API request
-    //     *
-    //     * @return void
-    //     */
-    //    protected function setDomain(?string $domain): void
-    //    {
-    //        if ($domain == null) {
-    //            $this->domain = config(
-    //                $this->config_path . 'connections.' . $this->connection_key . '.domain'
-    //            );
-    //        } else {
-    //            $this->domain = $domain;
-    //        }
-    //
-    //        if($this->domain == null){
-    //            $this->error_message = 'The Google Domain has not been set';
-    //            dd($this->error_message);
-    //        }
-    //    }
-    //
-    //    /**
-    //     * Set the customer_id class variable. The customer_id variable by default
-    //     * will be set to the `customer_id` element of the `workspace` in the
-    //     * configuration file. This can be overridden when initializing the SDK with
-    //     * a different customer_id which is passed into this function to set the
-    //     * class variable to the provided customer_id
-    //     *
-    //     * @param ?string $customer_id (Optional) The customer ID to use for the
-    //     * Google Workspace API request
-    //     *
-    //     * @return void
-    //     */
-    //    protected function setCustomerId(?string $customer_id): void
-    //    {
-    //        if ($customer_id == null) {
-    //            // dd($this->connection_key);
-    //            $this->customer_id = config(
-    //                $this->config_path . 'connections.' . $this->connection_key . '.customer_id'
-    //            );
-    //        } else {
-    //            $this->customer_id = $customer_id;
-    //        }
-    //
-    //        if($this->customer_id == null){
-    //            $this->error_message = 'The Google Customer ID has not been set';
-    //            dd($this->error_message);
-    //        }
-    //    }
-
     /**
      * Google API GET Request
      *
