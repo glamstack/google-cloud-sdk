@@ -160,26 +160,81 @@ return [
          * Google Cloud Platform
          * --------------------------------------------------------------------
          *
-         * TODO: Documentation needs to be updated for Cloud APIs when building
-         * out the SDK for GCP.
+         * You can define multiple GCP projects or create a service account in
+         * one project and grant it permissions to multiple projects using GCP
+         * organization IAM binding policies, however this may be overpermissive
+         * depending on your use case.
          *
+         * The default `gcp_default` connection key helps you get started if you
+         * are only using one GCP project. If you have multiple GCP projects,
+         * you can add additional arrays below with unique snakecase names.
+         *
+         * @param string $project_id
+         *      The GCP project ID associated with the GCP service account key.
+         *      If the service account has organization-level permissions, this
+         *      is the GCP project that the service account was created in.
+         *      This can be found inside of the JSON file contents and may be
+         *      a 12-digit integer or an alphadash name.
+         *      ```
+         *      123456789012
+         *      my-project-a1b2c3
+         *      ```
+         *
+         * @param array $api_scopes The API OAUTH scopes that will be needed
+         *      for the Google Cloud Platform API endpoints that will be used.
+         *      These need to match what you have granted your service account.
+         *      ```php
+         *      [
+         *          'https://www.googleapis.com/auth/admin.directory.user',
+         *          'https://www.googleapis.com/auth/cloud-platform',
+         *          'https://www.googleapis.com/auth/compute',
+         *          'https://www.googleapis.com/auth/ndev.clouddns.readwrite'
+         *          'https://www.googleapis.com/auth/cloud-billing',
+         *          'https://www.googleapis.com/auth/monitoring.read',
+         *      ]
+         *      ```
+         *
+         * @param json $json_key_array
+         *      (Option 1) The JSON array with the service account key. This
+         *      option should be used if the JSON key is accessed dynamically
+         *      from a database or similar method.
+         *
+         * @param string $json_key_file (Option 2)
+         *      (Option 2) The JSON key file path. It is recommended to store
+         *      this in `storage/keys/glamstack-google/{project-id}.json`,
+         *      however you can use any path in your operating system.
+         *      ```php
+         *      storage('keys/glamstack-google/123456789012.json')
+         *      ```
+         *
+         * @param array  $log_channels
+         *      The Laravel log channels to send all related info and error
+         *      logs to. If you leave this at the value of `['single']`, all
+         *      API call logs will be sent to the default log file for Laravel
+         *      that you have configured in `config/logging.php` which logs to
+         *      `storage/logs/laravel.log`.
+         *
+         *      If you would like to see Google API logs in a separate log file
+         *      that is easier to triage without unrelated log messages, you can
+         *      create a custom log channel and add the channel name to the
+         *      array. For example, we recommend creating a custom channel
+         *      (ex. `glamstack-google-gcp`), however you can choose any
+         *      name you would like.
+         *      Ex. ['single', 'glamstack-google-gcp']
+         *
+         *      You can also add additional channels that logs should be sent to.
+         *      Ex. ['single', 'glamstack-google-gcp', 'slack']
          */
 
-
-        'gcp_project_1' => [
-            'customer_id' => env('GOOGLE_WORKSPACE_CUSTOMER_ID'),
-            'domain' => env('GOOGLE_WORKSPACE_DOMAIN'),
-            'email' => env('GOOGLE_AUTH_WORKSPACE_EMAIL'),
+        'gcp_default' => [
+            'project_id' => env('GOOGLE_GCP_DEFAULT_PROJECT_ID'),
             'api_scopes' => [
-                'https://www.googleapis.com/auth/admin.directory.user',
-//                'https://www.googleapis.com/auth/cloud-platform',
-                //'https://www.googleapis.com/auth/compute',
-                'https://www.googleapis.com/auth/ndev.clouddns.readwrite'
-                //'https://www.googleapis.com/auth/cloud-billing',
-                //'https://www.googleapis.com/auth/monitoring.read',
+                'https://www.googleapis.com/auth/cloud-platform',
+                'https://www.googleapis.com/auth/compute',
             ],
-            'project_id' => env('GCP_PROJECT_1_ID'),
+            'json_key_file' => storage('keys/glamstack-google/gcp-default.json'),
             'log_channels' => ['single']
-        ]
+        ],
+
     ]
 ];
