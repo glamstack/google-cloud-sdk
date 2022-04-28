@@ -1,13 +1,13 @@
 <?php
 
 it('can get a specific managed zone', function() {
-    $testing = new Glamstack\GoogleCloud\ApiClient('gcp_project_1');
+    $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->managedZone()->get('testing-zone');
     expect($response->status->code)->toBe(200);
 });
 
 it('can list managed zones', function() {
-    $testing = new Glamstack\GoogleCloud\ApiClient('gcp_project_1');
+    $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->managedZone()->list();
     expect($response->status->code)->toBe(200);
     expect($response->json)->toBeJson();
