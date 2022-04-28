@@ -137,6 +137,7 @@ return [
                 'https://www.googleapis.com/auth/cloud-platform',
                 'https://www.googleapis.com/auth/compute',
             ],
+            'email' => env('GOOGLE_WORKSPACE_USER_EMAIL'),
             'json_key_file' => null,
             'log_channels' => ['single']
         ],
