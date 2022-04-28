@@ -3,6 +3,7 @@
 namespace Glamstack\GoogleCloud;
 
 use Glamstack\GoogleCloud\Resources\Dns\Dns;
+use Glamstack\GoogleCloud\Resources\Rest\Rest;
 
 class ApiClient
 {
