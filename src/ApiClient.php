@@ -62,6 +62,11 @@ class ApiClient
         return new Dns($this->connection_key, $this->connection_config);
     }
 
+    public function rest(): Rest
+    {
+        return new Rest($this->connection_key, $this->connection_config);
+    }
+
     /**
      * Set the connection_key class variable
      *
