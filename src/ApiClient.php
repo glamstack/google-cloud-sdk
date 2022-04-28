@@ -8,7 +8,7 @@ use Glamstack\GoogleCloud\Resources\Rest\Rest;
 class ApiClient
 {
     // Standard parameters for building the GoogleDriveApiClient
-    private string $config_path = 'glamstack-google.';
+    private string $config_path = 'glamstack-google-cloud.';
     public ?string $connection_key;
     public array $connection_config;
     public array $request_headers;
@@ -82,7 +82,7 @@ class ApiClient
     {
         if($connection_key == null) {
             $this->connection_key = config(
-                $this->config_path.'auth.default_connection'
+                $this->config_path.'default.connection'
             );
         } else {
             $this->connection_key = $connection_key;
