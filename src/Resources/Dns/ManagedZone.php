@@ -56,7 +56,12 @@ class ManagedZone extends BaseClient
     public function create(array $request_data, array $optional_request_data = []): object|string
     {
         $this->managedZoneModel->verifyCreate($request_data);
-        return BaseClient::postRequest('/' . $this->project_id . '/managedZones', $request_data);
+
+        // Merge the required request data with the optional request data
+        $request_data = array_merge($request_data, $optional_request_data);
+
+        return BaseClient::postRequest('/' . $this->project_id .
+            '/managedZones', $request_data);
     }
 
     public function delete(string $zone_name): object|string
