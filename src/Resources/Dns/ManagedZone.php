@@ -88,6 +88,19 @@ class ManagedZone extends BaseClient
             '/managedZones', $request_data);
     }
 
+    /**
+     * Delete a managed zone from a Google Project
+     *
+     * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/delete
+     *
+     * @param string $managed_zone
+     *      The managed zone to delete
+     *
+     * @param array $request_data
+     *      Optional request data to pass into the DELETE request
+     *
+     * @return object|string
+     */
     public function delete(string $managed_zone, array $request_data = []): object|string
     {
         return BaseClient::deleteRequest('/' . $this->project_id .
