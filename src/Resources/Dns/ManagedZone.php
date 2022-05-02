@@ -37,9 +37,10 @@ class ManagedZone extends BaseClient
             '/managedZones/' . $managed_zone, $optional_request_data);
     }
 
-    public function list(): object|string
+    public function list(array $optional_request_data = []): object|string
     {
-        return BaseClient::getRequest('/' . $this->project_id . '/managedZones');
+        return BaseClient::getRequest('/' . $this->project_id .
+            '/managedZones', $optional_request_data);
     }
 
     public function create(array $request_data, array $optional_request_data = []): object|string
