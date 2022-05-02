@@ -20,7 +20,7 @@ class RecordSet extends BaseClient
     public function list(string $managed_zone, array $request_data = []): object|string
     {
         return BaseClient::getRequest('/' . $this->project_id . '/managedZones/' .
-            $managed_zone . '/rrsets', []);
+            $managed_zone . '/rrsets', $request_data);
     }
 
     /**
