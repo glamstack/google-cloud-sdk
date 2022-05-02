@@ -17,9 +17,24 @@ class ManagedZone extends BaseClient
         $this->managedZoneModel = new ManagedZoneModel();
     }
 
-    public function get(string $zone_name, $optional_request_data = []): object|string
+    /**
+     * Get a managed zone's information
+     *
+     * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/get
+     *
+     * @param string $managed_zone
+     *      The `ID` or `Name` of the managed zone to get information of
+     *
+     * @param array $optional_request_data
+     *      Optional request data to use with the GET request.
+     *      i.e. Utilizing the `fields` parameter
+     * 
+     * @return object|string
+     */
+    public function get(string $managed_zone, array $optional_request_data = []): object|string
     {
-        return BaseClient::getRequest('/' . $this->project_id . '/managedZones/' . $zone_name, $optional_request_data);
+        return BaseClient::getRequest('/' . $this->project_id .
+            '/managedZones/' . $managed_zone, $optional_request_data);
     }
 
     public function list(): object|string
