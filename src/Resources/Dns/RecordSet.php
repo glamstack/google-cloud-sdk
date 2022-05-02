@@ -39,9 +39,9 @@ class RecordSet extends BaseClient
             $managed_zone . '/rrsets', $request_data);
     }
 
-    public function delete(string $managed_zone, string $name, string $type): object|string
+    public function delete(string $managed_zone, string $name, string $type, array $request_data = []): object|string
     {
         return BaseClient::deleteRequest('/' . $this->project_id . '/managedZones/' .
-            $managed_zone . '/rrsets/' . $name . '/' . $type);
+            $managed_zone . '/rrsets/' . $name . '/' . $type, $request_data);
     }
 }
