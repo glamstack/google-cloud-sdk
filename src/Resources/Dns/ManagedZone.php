@@ -53,8 +53,32 @@ class ManagedZone extends BaseClient
             '/managedZones', $optional_request_data);
     }
 
+    /**
+     * Create a new managed zone in the Google Project
+     *
+     * Required Parameters Array:
+     * ```php
+     * [
+     *      'name' => (string) GCP Managed Zone name,
+     *      'dns_name' => (string) The DNS name of this managed zone (ex. "example.com."),
+     *      'visibility' => (string) The zone's visibility: public zones are exposed to the Internet while private zones are visible only to Virtual Private Cloud resources. ("public" or "private"),
+     *      'dnssec_config_state' => (string) DNSSEC configuration ("on" or "off"),
+     *      'description' => (string) A short description of the managed zone
+     * ];
+     * ```
+     * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/create
+     *
+     * @param array $request_data
+     *      Required managed zone properties for creation
+     *
+     * @param array $optional_request_data
+     *      Optional extra properties for the managed zone creation
+     *
+     * @return object|string
+     */
     public function create(array $request_data, array $optional_request_data = []): object|string
     {
+        // Verify all required parameters are passed in
         $this->managedZoneModel->verifyCreate($request_data);
 
         // Merge the required request data with the optional request data
