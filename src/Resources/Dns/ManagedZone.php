@@ -88,9 +88,10 @@ class ManagedZone extends BaseClient
             '/managedZones', $request_data);
     }
 
-    public function delete(string $zone_name): object|string
+    public function delete(string $managed_zone, array $request_data = []): object|string
     {
-        return BaseClient::deleteRequest('/' . $this->project_id . '/managedZones/' . $zone_name);
+        return BaseClient::deleteRequest('/' . $this->project_id .
+            '/managedZones/' . $managed_zone, $request_data);
     }
 
     public function update(string $managed_zone, array $request_data): object|string
