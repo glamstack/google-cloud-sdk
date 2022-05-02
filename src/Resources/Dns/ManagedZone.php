@@ -37,6 +37,16 @@ class ManagedZone extends BaseClient
             '/managedZones/' . $managed_zone, $optional_request_data);
     }
 
+    /**
+     * List the managed zones of a Google Project
+     *
+     * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/list
+     *
+     * @param array $optional_request_data
+     *      Optional request data to use with list
+     *
+     * @return object|string
+     */
     public function list(array $optional_request_data = []): object|string
     {
         return BaseClient::getRequest('/' . $this->project_id .
