@@ -80,6 +80,20 @@ it('can create a recordSet', function() {
 });
 
 /**
+ * Test getting a specific record set
+ */
+it('can get a specific record set', function(){
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->recordSet()->get(
+        'testing-zone',
+        'testingmail.testingzone.example.com.',
+        'CNAME'
+    );
+    expect($response->object->name)->toBe('testingmail.testingzone.example.com.');
+});
+
+
+/**
  * Test the deletion of a record set
  */
 it('can delete a recordSet', function() {
