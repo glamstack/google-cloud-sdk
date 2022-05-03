@@ -4,13 +4,20 @@ use Glamstack\GoogleCloud\Exceptions\RecordSetException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
-it('can reach recordset', function () {
+/**
+ * Test of listing a managed zone's record sets
+ */
+it('can list recordset', function () {
     $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->recordSet()->list('testing-zone');
     expect($response->status->code)->toBe(200);
 });
 
-it('can reach recordset with custom configuration', function () {
+/**
+ * Test of listing a managed zone's record set while using a custom
+ * configuration during `ApiClient` initialization
+ */
+it('can list recordset with custom configuration', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
         'email' => 'dwheeler@gitlab.com',
@@ -22,6 +29,9 @@ it('can reach recordset with custom configuration', function () {
     expect($response->status->code)->toBe(200);
 });
 
+/**
+ * Test error is thrown when require parameters are missing from the create method
+ */
 it('does not meet the record requirements', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
@@ -35,6 +45,9 @@ it('does not meet the record requirements', function () {
     ]);
 })->throws(UndefinedOptionsException::class);
 
+/**
+ * Test error is thrown when rrdatas has incorrect value type
+ */
 it('does not have the required type for rrdatas', function() {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
@@ -51,6 +64,9 @@ it('does not have the required type for rrdatas', function() {
     ]);
 })->throws(InvalidOptionsException::class);
 
+/**
+ * Test the creation of a record set
+ */
 it('can create a recordSet', function() {
     $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->recordSet()->create('testing-zone', [
@@ -63,6 +79,9 @@ it('can create a recordSet', function() {
     expect($response->status->code)->toBe(200);
 });
 
+/**
+ * Test the deletion of a record set
+ */
 it('can delete a recordSet', function() {
     $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->RecordSet()->delete('testing-zone',
