@@ -1,11 +1,17 @@
 <?php
 
+/**
+ * Test getting a managed zone's information
+ */
 it('can get a specific managed zone', function() {
     $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->managedZone()->get('testing-zone');
     expect($response->status->code)->toBe(200);
 });
 
+/**
+ * Test listing all managed zones of a project
+ */
 it('can list managed zones', function() {
     $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->managedZone()->list();
@@ -14,6 +20,9 @@ it('can list managed zones', function() {
     expect($response->object)->toBeObject();
 });
 
+/**
+ * Test creation of a new managed zone
+ */
 it('can create a new zone', function() {
     $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->managedZone()->create(
@@ -27,6 +36,9 @@ it('can create a new zone', function() {
     expect($response->status->code)->toBe(200);
 });
 
+/**
+ * Test deletion of a managed zone
+ */
 it('can delete a zone', function() {
     $testing = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $testing->dns()->managedZone()->delete('testing-zone-3');
