@@ -16,14 +16,35 @@ class ManagedZoneModel
         $this->resolver = new OptionsResolver();
     }
 
-    public function verifyCreate(array $options = []): array{
+    /**
+     * Verify required resource for creation of a managed zone
+     *
+     * @param array $options
+     *      The request_data array for managed zone creation
+     *
+     * @return array
+     */
+    public function verifyCreate(array $options = []): array
+    {
         $this->createOptions($this->resolver);
         $this->options = $this->resolver->resolve($options);
         $this->updateOptionsArray();
         return $this->options;
     }
 
-    protected function createOptions(OptionsResolver $resolver)
+    /**
+     * Verify all required options are set
+     *
+     * Utilizes `OptionsResolver` for validation
+     *
+     * @see https://symfony.com/doc/current/components/options_resolver.html
+     *
+     * @param OptionsResolver $resolver
+     *      The request_data array passed in for creating a managed zone
+     *
+     * @return void
+     */
+    protected function createOptions(OptionsResolver $resolver): void
     {
         $resolver->define('name')
             ->required()
@@ -59,7 +80,16 @@ class ManagedZoneModel
 
     }
 
-    protected function updateOptionsArray(){
+    /**
+     * Updates array properties into Google dot notation
+     *
+     * This method will update the `dnssec_config_state` to `dnssecConfig.state`
+     * and `cloud_logging_enabled` to `cloudLoggingConfig.enableLogging`
+     *
+     * @return void
+     */
+    protected function updateOptionsArray(): void
+    {
         $this->options['dnssecConfig.state'] = $this->options['dnssec_config_state'];
         unset($this->options['dnssec_config_state']);
 
