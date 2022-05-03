@@ -18,6 +18,36 @@ class RecordSet extends BaseClient
     }
 
     /**
+     * Get a GCP record set
+     *
+     * @see https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets/get
+     *
+     * @param string $managed_zone
+     *      Identifies the managed zone addressed by this request. Can be the managed zone name or ID
+     *
+     * @param string $record_set
+     *      Fully qualified domain name of the record set (ex 'testingmail.testingzone.example.com.')
+     *
+     * @param string $record_type
+     *      RRSet type (ex. 'CNAME')
+     *
+     * @param array $request_data
+     *      Optional request parameters to pass into request body
+     *
+     * @return object|string
+     */
+    public function get(
+        string $managed_zone,
+        string $record_set,
+        string $record_type,
+        array $request_data = []
+    ): object|string
+    {
+        return BaseClient::getRequest('/' . $this->project_id . '/managedZones/' .
+            $managed_zone . '/rrsets/' . $record_set . '/' . $record_type, $request_data);
+    }
+
+    /**
      * List a GCP managed zone's records
      *
      * @see https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets/list
