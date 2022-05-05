@@ -13,7 +13,6 @@ use Glamstack\GoogleAuth\AuthClient;
 abstract class BaseClient
 {
 
-    private string $base_url = 'https://dns.googleapis.com/dns/v1/projects';
     private string $config_path = 'glamstack-google.';
     private string $auth_token;
     private string $connection_key;
