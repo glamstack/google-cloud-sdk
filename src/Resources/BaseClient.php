@@ -99,6 +99,14 @@ abstract class BaseClient
         }
     }
 
+    protected function getConfigArrayJsonKey(array $connection_config){
+        if(array_key_exists('json_key', $connection_config)){
+            return $connection_config['json_key'];
+        } else {
+            return null;
+        }
+    }
+
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
