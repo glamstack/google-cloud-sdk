@@ -43,6 +43,13 @@ abstract class BaseClient
         $this->auth_token = $google_auth->authenticate();
     }
 
+    protected function parseConfigFile(string $connection_key){
+        return [
+            'api_scopes' => $this->getConfigApiScopes($connection_key),
+            'subject_email' => $this->getConfigSubjectEmail($connection_key),
+            'file_path' => $this->getConfigJsonFilePath($connection_key)
+        ];
+    }
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
