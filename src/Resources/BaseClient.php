@@ -163,8 +163,8 @@ abstract class BaseClient
 
         $response = Http::withToken($this->auth_token)
             ->withHeaders($this->api_client->request_headers)
-            ->get($this->base_url.$uri, $request_data);
-//        dd($response);
+            ->get($uri, $request_data);
+
         // Check if the data is paginated
         $isPaginated = $this->checkForPagination($response);
 
@@ -270,7 +270,7 @@ abstract class BaseClient
         // Append to Google Domain and Google Customer ID to the request data
         $request = Http::withToken($this->auth_token)
             ->withHeaders($this->api_client->request_headers)
-            ->post($this->base_url.$uri, $request_data);
+            ->post($uri, $request_data);
         // Parse the API request's response and return a Glamstack standardized
         // response
         $response = $this->parseApiResponse($request);
@@ -284,7 +284,7 @@ abstract class BaseClient
         $request_data = array_merge($request_data, $this->required_parameters);
         $request = Http::withToken($this->auth_token)
             ->withHeaders($this->api_client->request_headers)
-            ->patch($this->base_url.$uri, $request_data);
+            ->patch($uri, $request_data);
         // Parse the API request's response and return a Glamstack standardized
         // response
         $response = $this->parseApiResponse($request);
@@ -389,7 +389,7 @@ abstract class BaseClient
 
         $request = Http::withToken($this->auth_token)
             ->withHeaders($this->request_headers)
-            ->put($this->base_url.$uri, $request_data);
+            ->put($uri, $request_data);
 
         // Parse the API request's response and return a Glamstack standardized
         // response
@@ -454,7 +454,7 @@ abstract class BaseClient
 
         $request = Http::withToken($this->auth_token)
             ->withHeaders($this->api_client->request_headers)
-            ->delete($this->base_url.$uri, $request_data);
+            ->delete($uri, $request_data);
 
         // Parse the API request's response and return a Glamstack standardized
         // response
@@ -628,7 +628,7 @@ abstract class BaseClient
 
         $records = Http::withToken($this->auth_token)
             ->withHeaders($this->request_headers)
-            ->get($this->base_url.$uri, $request_body);
+            ->get($uri, $request_body);
 
         return $records;
     }
