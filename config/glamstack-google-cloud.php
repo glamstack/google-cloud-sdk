@@ -99,11 +99,11 @@ return [
      *
      *      If null, the GCP service account JSON API key file that you
      *      generate and download should be added to your locally cloned
-     *      repository in the `storage/keys/google-cloud-sdk` directory with
+     *      repository in the `storage/keys/glamstack-google-cloud` directory with
      *      the filename that matches the connection key.
      *
      *      ```php
-     *      storage('keys/google-cloud-sdk/test.json')
+     *      storage('keys/glamstack-google-cloud/test.json')
      *      ```
      *
      * @param array  $log_channels
@@ -134,11 +134,10 @@ return [
         'test' => [
             'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID'),
             'api_scopes' => [
-                'https://www.googleapis.com/auth/cloud-platform',
-                'https://www.googleapis.com/auth/compute',
+                'https://www.googleapis.com/auth/ndev.clouddns.readwrite'
             ],
-            'email' => env('GOOGLE_WORKSPACE_USER_EMAIL'),
-            'json_key_file' => null,
+            'subject_email' => env('GOOGLE_WORKSPACE_USER_EMAIL'),
+            'json_key_file' => storage_path('keys/glamstack-google-cloud/test.json'),
             'log_channels' => ['single']
         ],
 
