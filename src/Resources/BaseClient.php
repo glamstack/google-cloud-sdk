@@ -24,18 +24,19 @@ abstract class BaseClient
         ApiClient $api_client
     )
     {
+        // Initialize Google Auth SDK
         $this->api_client = $api_client;
-        // Initialize the Google Auth Client
 
+        // Set the Google Project ID
         $this->setProjectId();
 
         if($this->api_client->connection_key){
             $google_auth = new \Glamstack\GoogleAuth\AuthClient(
-                $this->api_client->connection_key
+                $this->parseConfigFile($this->api_client->connection_key)
             );
         } else {
             $google_auth = new \Glamstack\GoogleAuth\AuthClient(
-                $this->api_client->connection_key, $this->api_client->connection_config
+                $this->parseConnectionConfigArray($this->api_client->connection_config)
             );
         }
 
