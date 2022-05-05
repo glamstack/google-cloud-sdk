@@ -2,6 +2,7 @@
 
 namespace Glamstack\GoogleCloud;
 
+use Glamstack\GoogleCloud\Models\ApiClientModel;
 use Glamstack\GoogleCloud\Resources\Dns\Dns;
 use Glamstack\GoogleCloud\Resources\Rest\Rest;
 
@@ -18,13 +19,13 @@ class ApiClient
      * connection configuration array
      *
      * @param ?string $connection_key
-     *      The connection key to use from `config/glamstack-google.php` file
+     *      The connection key to use from `config/glamstack-google-cloud.php` file
      *      to set the appropriate Google Auth Settings.
      *
-     * @param array $connection_config
+     * @param ?array $connection_config
      *      A custom array of connection configuration key/values. You can use
      *      either `json_key_array` or `json_key_file`. See the docblock in
-     *      `config/glamstack-google.php` for full documentation.
+     *      `config/glamstack-google-cloud.php` for full documentation.
      *      ```php
      *      [
      *          'project_id' => '123456789012',
@@ -33,7 +34,7 @@ class ApiClient
      *              'https://www.googleapis.com/auth/compute'
      *          ],
      *          'json_key_array' => {json},
-     *          'json_key_file' => storage('keys/glamstack-google/123456789012.json')
+     *          'json_key_file' => storage('keys/glamstack-google-cloud/123456789012.json')
      *      ]
      *      ```
      *
