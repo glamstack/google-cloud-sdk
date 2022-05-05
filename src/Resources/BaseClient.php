@@ -83,6 +83,13 @@ abstract class BaseClient
         return $connection_config['api_scopes'];
     }
 
+    protected function getConfigArraySubjectEmail(array $connection_config){
+        if(array_key_exists('subject_email', $connection_config)){
+            return $connection_config['subject_email'];
+        } else {
+            return null;
+        }
+    }
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
