@@ -90,6 +90,15 @@ abstract class BaseClient
             return null;
         }
     }
+
+    protected function getConfigArrayFilePath(array $connection_config){
+        if(array_key_exists('file_path', $connection_config)){
+            return $connection_config['file_path'];
+        } else {
+            return null;
+        }
+    }
+
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
