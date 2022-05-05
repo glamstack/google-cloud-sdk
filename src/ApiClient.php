@@ -76,7 +76,7 @@ class ApiClient
      *
      * If no connection_key is provided, the `GOOGLE_AUTH_DEFAULT_CONNECTION`
      * variable in `.env` is used. If the `.env` variable is not set, the value
-     * is defined in `config/glamstack-google.php` and is set to `workspace` if
+     * is defined in `config/glamstack-google-cloud.php` and is set to `workspace` if
      * not defined since the configuration is shared with the Google Workspace
      * SDK. This can be overridden when initializing the SDK with a different
      * connection key which is passed into this function to set the class
