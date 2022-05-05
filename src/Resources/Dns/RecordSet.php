@@ -9,6 +9,8 @@ use Glamstack\GoogleCloud\Models\Dns\RecordSetModel;
 class RecordSet extends BaseClient
 {
 
+    const BASE_URL = 'https://dns.googleapis.com/dns/v1/projects';
+
     private RecordSetModel $recordSetModel;
 
     public function __construct(ApiClient $api_client)
@@ -43,7 +45,7 @@ class RecordSet extends BaseClient
         array $request_data = []
     ): object|string
     {
-        return BaseClient::getRequest('/' . $this->project_id . '/managedZones/' .
+        return BaseClient::getRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets/' . $record_set . '/' . $record_type, $request_data);
     }
 
@@ -62,7 +64,7 @@ class RecordSet extends BaseClient
      */
     public function list(string $managed_zone, array $request_data = []): object|string
     {
-        return BaseClient::getRequest('/' . $this->project_id . '/managedZones/' .
+        return BaseClient::getRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets', $request_data);
     }
 
@@ -102,7 +104,7 @@ class RecordSet extends BaseClient
 
         $request_data = array_merge($request_data, $optional_request_data);
 
-        return BaseClient::postRequest('/' . $this->project_id . '/managedZones/' .
+        return BaseClient::postRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets', $request_data);
     }
 
@@ -125,7 +127,7 @@ class RecordSet extends BaseClient
      */
     public function delete(string $managed_zone, string $name, string $type, array $request_data = []): object|string
     {
-        return BaseClient::deleteRequest('/' . $this->project_id . '/managedZones/' .
+        return BaseClient::deleteRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets/' . $name . '/' . $type, $request_data);
     }
 }
