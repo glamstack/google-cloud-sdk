@@ -64,6 +64,12 @@ abstract class BaseClient
             return null;
         }
     }
+
+    protected function getConfigJsonFilePath(string $connection_key){
+        return config(self::CONFIG_PATH . 'connections.' . $connection_key .
+            '.json_key_file');
+    }
+
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
