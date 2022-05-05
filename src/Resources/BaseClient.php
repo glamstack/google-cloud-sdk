@@ -56,6 +56,14 @@ abstract class BaseClient
             '.api_scopes');
     }
 
+    protected function getConfigSubjectEmail(string $connection_key){
+        $config_path = self::CONFIG_PATH . 'connections.' . $connection_key;
+        if(array_key_exists('subject_email', config($config_path))){
+            return config($config_path . '.subject_email');
+        } else {
+            return null;
+        }
+    }
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
