@@ -13,7 +13,7 @@ use Glamstack\GoogleAuth\AuthClient;
 abstract class BaseClient
 {
 
-    private string $config_path = 'glamstack-google.';
+    const CONFIG_PATH = 'glamstack-google-cloud.';
     private string $auth_token;
     private string $connection_key;
     protected string $project_id;
@@ -46,7 +46,7 @@ abstract class BaseClient
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
-                $this->config_path . 'connections.' .
+                self::CONFIG_PATH . 'connections.' .
                 $this->api_client->connection_key . '.project_id'
             );
         } else {
