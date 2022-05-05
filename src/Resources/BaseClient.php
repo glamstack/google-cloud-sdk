@@ -50,6 +50,12 @@ abstract class BaseClient
             'file_path' => $this->getConfigJsonFilePath($connection_key)
         ];
     }
+
+    protected function getConfigApiScopes(string $connection_key){
+        return config(self::CONFIG_PATH . 'connections.' . $connection_key .
+            '.api_scopes');
+    }
+
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
