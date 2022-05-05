@@ -70,6 +70,15 @@ abstract class BaseClient
             '.json_key_file');
     }
 
+    protected function parseConnectionConfigArray(array $connection_config){
+        return [
+            'api_scopes' => $this->getConfigArrayApiScopes($connection_config),
+            'subject_email' => $this->getConfigArraySubjectEmail($connection_config),
+            'file_path' => $this->getConfigArrayFilePath($connection_config),
+            'json_key' => $this->getConfigArrayJsonKey($connection_config)
+        ];
+    }
+
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
