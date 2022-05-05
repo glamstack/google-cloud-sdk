@@ -44,12 +44,15 @@ class ApiClient
         ?array $connection_config = []
     )
     {
+        $api_client_model = new ApiClientModel();
+
         // Set the connection key used for getting the correct configuration
         if(empty($connection_config)){
             $this->setConnectionKey($connection_key);
             $this->connection_config = [];
         } else {
             $this->connection_key = null;
+            $api_client_model->verifyConfigArray($connection_config);
             $this->connection_config = $connection_config;
         }
 
