@@ -567,7 +567,7 @@ abstract class BaseClient
         Response $response
     ): array
     {
-// Initialize $records as an empty array. This is where we will store
+        // Initialize $records as an empty array. This is where we will store
         // the returned data from each paginated request.
         $records = [];
 
@@ -632,10 +632,7 @@ abstract class BaseClient
             // If there is another page set the `next_page_token` variable
             // to the `nextPageToken` from the response.
             if($next_page_exists) {
-                $next_page_token = $this->getNextPageToken($next_response);
-            } // Else there is not another page so set the `next_page_token` to null
-            else {
-                $next_page_token = null;
+                $this->getNextPageToken($next_response);
             }
         }
 
@@ -655,9 +652,7 @@ abstract class BaseClient
      */
     protected function getNextPageToken(Response $response): string
     {
-
-        $next_page_token = $response->object()->nextPageToken;
-        return $next_page_token;
+        return $response->object()->nextPageToken;
     }
 
     /**
@@ -946,7 +941,7 @@ abstract class BaseClient
     {
         $message = Str::upper($method).' '.$status_code.' '.$endpoint;
 
-        Log::stack((array) config('glamstack-google-workspace.log_channels'))
+        Log::stack((array) config(self::CONFIG_PATH . 'log_channels'))
             ->info($message, [
                 'event_type' => 'google-workspace-api-response-info',
                 'class' => get_class(),
@@ -977,7 +972,7 @@ abstract class BaseClient
         string $reference
     ): string
     {
-        Log::stack((array) config('glamstack-google-workspace.log_channels'))
+        Log::stack((array) config(self::CONFIG_PATH . 'log_channels'))
             ->error($exception->getMessage(), [
                 'event_type' => 'google-workspace-api-response-error',
                 'class' => $log_class,
