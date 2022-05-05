@@ -12,6 +12,6 @@ testbench.yaml
 vendor
 node_modules
 .php-cs-fixer.cache
-storage/keys
+storage/keys/*
 .env
 .env.testing
