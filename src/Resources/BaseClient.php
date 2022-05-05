@@ -79,6 +79,10 @@ abstract class BaseClient
         ];
     }
 
+    protected function getConfigArrayApiScopes(array $connection_config){
+        return $connection_config['api_scopes'];
+    }
+
     protected function setProjectId(){
         if($this->api_client->connection_key){
             $this->project_id = config(
