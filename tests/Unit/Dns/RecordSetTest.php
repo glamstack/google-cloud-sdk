@@ -20,9 +20,7 @@ it('can list recordset', function () {
 it('can list recordset with custom configuration', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
-        'email' => 'dwheeler@gitlab.com',
-        'file_path' => 'storage/keys/glamstack-google/test.json',
-        'log_channels' => ['single'],
+        'file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => 'dwheeler-277df745'
     ]);
     $response = $client->dns()->recordSet()->list('testing-zone');
@@ -35,9 +33,8 @@ it('can list recordset with custom configuration', function () {
 it('does not meet the record requirements', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
-        'email' => 'dwheeler@gitlab.com',
-        'file_path' => 'storage/keys/glamstack-google/test.json',
-        'log_channels' => ['single'],
+        'subject_email' => 'dwheeler@gitlab.com',
+        'file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => 'dwheeler-277df745'
     ]);
     $client->dns()->recordSet()->create('testing-zone', [
@@ -51,9 +48,8 @@ it('does not meet the record requirements', function () {
 it('does not have the required type for rrdatas', function() {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
-        'email' => 'dwheeler@gitlab.com',
-        'file_path' => 'storage/keys/glamstack-google/test.json',
-        'log_channels' => ['single'],
+        'subject_email' => 'dwheeler@gitlab.com',
+        'file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => 'dwheeler-277df745'
     ]);
     $client->dns()->recordSet()->create('testing-zone', [
@@ -91,7 +87,6 @@ it('can get a specific record set', function(){
     );
     expect($response->object->name)->toBe('testingmail.testingzone.example.com.');
 });
-
 
 /**
  * Test the deletion of a record set
