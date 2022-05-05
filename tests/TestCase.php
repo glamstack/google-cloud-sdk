@@ -16,14 +16,15 @@ class TestCase extends Orchestra
         if(!is_dir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys')){
             mkdir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys');
         }
-        if (!is_dir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google')){
-            mkdir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google');
+        if (!is_dir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud')){
+            mkdir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud');
         }
-        if (!is_link(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google/gcp_project_1.json')) {
-            symlink(__DIR__.'/../storage/keys/glamstack-google/gcp_project_1.json', __DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google/gcp_project_1.json');
+        if (!is_link(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud/test.json')) {
+            symlink(__DIR__ . '/../storage/keys/glamstack-google-cloud/test.json', __DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud/test.json');
         }
+        
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Glamstack\GoogleCloud\\ApiClient\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Glamstack\\GoogleCloud\\ApiClient\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
