@@ -8,8 +8,8 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
  * Test of listing a managed zone's record sets
  */
 it('can list recordset', function () {
-    $testing = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $testing->dns()->recordSet()->list('testing-zone');
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->recordSet()->list('testing-zone');
     expect($response->status->code)->toBe(200);
 });
 
@@ -64,8 +64,8 @@ it('does not have the required type for rrdatas', function() {
  * Test the creation of a record set
  */
 it('can create a recordSet', function() {
-    $testing = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $testing->dns()->recordSet()->create('testing-zone', [
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->recordSet()->create('testing-zone', [
         'name' => 'testingmail.testingzone.example.com.',
         'type' => 'CNAME',
         'ttl' => 300,
@@ -92,8 +92,8 @@ it('can get a specific record set', function(){
  * Test the deletion of a record set
  */
 it('can delete a recordSet', function() {
-    $testing = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $testing->dns()->RecordSet()->delete('testing-zone',
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->RecordSet()->delete('testing-zone',
     'testingmail.testingzone.example.com.', 'CNAME');
     expect($response->status->successful)->toBeTrue();
 });
