@@ -7,6 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ApiClientModel
 {
     private OptionsResolver $resolver;
+    private array $options;
 
     public function __construct(){
         $this->resolver = new OptionsResolver();
@@ -18,12 +19,14 @@ class ApiClientModel
      * @param array $options
      *      The request_data array for managed zone creation
      *
-     * @return void
+     * @return array
      */
-    public function verifyConfigArray(array $options = []): void
+    public function verifyConfigArray(array $options = []): array
     {
         $this->configArrayOption($this->resolver);
-        $this->resolver->resolve($options);
+        $this->options = $this->resolver->resolve($options);
+        $this->updateOptionsArray($this->options);
+        return $this->options;
     }
 
     /**
@@ -62,5 +65,23 @@ class ApiClientModel
             ->allowedTypes('string')
             ->info('The JSON Key as a string to use for the API calls');
 
+        $resolver->define('log_channels')
+            ->allowedTypes('array')
+            ->default(['single'])
+            ->info('The channels to log to for the SDK');
+
+    }
+
+    /**
+     * Updates array properties into Google dot notation
+     *
+     * This method will update the `dnssec_config_state` to `dnssecConfig.state`
+     * and `cloud_logging_enabled` to `cloudLoggingConfig.enableLogging`
+     *
+     * @return void
+     */
+    protected function updateOptionsArray(array $options_array): void
+    {
+        $this->options = $options_array;
     }
 }
