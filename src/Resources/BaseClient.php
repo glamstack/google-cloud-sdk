@@ -2,24 +2,27 @@
 
 namespace Glamstack\GoogleCloud\Resources;
 
+use Exception;
 use Glamstack\GoogleCloud\ApiClient;
+use Glamstack\GoogleCloud\Traits\ResponseLog;
 use Illuminate\Http\Client\Response;
-use \Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Glamstack\GoogleAuth\AuthClient;
 
 abstract class BaseClient
 {
 
-    const CONFIG_PATH = 'glamstack-google-cloud.';
-    private string $auth_token;
-    private string $connection_key;
-    protected string $project_id;
-    private array $request_headers;
-    private $api_client;
+    use ResponseLog;
 
+    const CONFIG_PATH = 'glamstack-google-cloud.';
+
+    private string $auth_token;
+    protected string $project_id;
+    protected array $log_channels;
+    private ApiClient $api_client;
+
+    /**
+     * @throws \Exception
+     */
     function __construct(
         ApiClient $api_client
     )
@@ -29,6 +32,9 @@ abstract class BaseClient
 
         // Set the Google Project ID
         $this->setProjectId();
+
+        // Set the log_channels class variable
+        $this->setLogChannels();
 
         if($this->api_client->connection_key){
             $google_auth = new \Glamstack\GoogleAuth\AuthClient(
@@ -49,7 +55,33 @@ abstract class BaseClient
         }
     }
 
-    protected function parseConfigFile(string $connection_key){
+    /**
+     * Set the log_channels class variable
+     *
+     * @return void
+     */
+    protected function setLogChannels(): void
+    {
+        if($this->api_client->connection_key){
+            $this->log_channels = config(
+                self::CONFIG_PATH . 'connections.' .
+                $this->api_client->connection_key . '.log_channels'
+            );
+        } else {
+            $this->log_channels = $this->api_client->connection_config['log_channels'];
+        }
+    }
+
+    /**
+     * Parse the configuration file to get config parameters
+     *
+     * @param string $connection_key
+     *      The connection key provided during initialization of the SDK
+     *
+     * @return array
+     */
+    protected function parseConfigFile(string $connection_key): array
+    {
         return [
             'api_scopes' => $this->getConfigApiScopes($connection_key),
             'subject_email' => $this->getConfigSubjectEmail($connection_key),
