@@ -5,9 +5,12 @@ namespace Glamstack\GoogleCloud;
 use Glamstack\GoogleCloud\Models\ApiClientModel;
 use Glamstack\GoogleCloud\Resources\Dns\Dns;
 use Glamstack\GoogleCloud\Resources\Rest\Rest;
+use Glamstack\GoogleCloud\Traits\ResponseLog;
 
 class ApiClient
 {
+    use ResponseLog;
+
     // Standard parameters for building the GoogleDriveApiClient
     private string $config_path = 'glamstack-google-cloud.';
     public ?string $connection_key;
@@ -53,8 +56,7 @@ class ApiClient
             $this->connection_config = [];
         } else {
             $this->connection_key = null;
-            $api_client_model->verifyConfigArray($connection_config);
-            $this->connection_config = $connection_config;
+            $this->connection_config = $api_client_model->verifyConfigArray($connection_config);
         }
 
         // Set the request headers to be used by the API client
