@@ -4,8 +4,8 @@
  * Test getting a managed zone's information
  */
 it('can get a specific managed zone', function() {
-    $testing = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $testing->dns()->managedZone()->get('testing-zone');
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->managedZone()->get('testing-zone');
     expect($response->status->code)->toBe(200);
 });
 
@@ -13,8 +13,8 @@ it('can get a specific managed zone', function() {
  * Test listing all managed zones of a project
  */
 it('can list managed zones', function() {
-    $testing = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $testing->dns()->managedZone()->list();
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->managedZone()->list();
     expect($response->status->code)->toBe(200);
     expect($response->json)->toBeJson();
     expect($response->object)->toBeObject();
@@ -24,8 +24,8 @@ it('can list managed zones', function() {
  * Test creation of a new managed zone
  */
 it('can create a new zone', function() {
-    $testing = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $testing->dns()->managedZone()->create(
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->managedZone()->create(
         [
             'name' => 'testing-zone-3',
             'dns_name' => 'testing-zone-3.example.com.',
@@ -40,8 +40,8 @@ it('can create a new zone', function() {
  * Test deletion of a managed zone
  */
 it('can delete a zone', function() {
-    $testing = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $testing->dns()->managedZone()->delete('testing-zone-3');
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->managedZone()->delete('testing-zone-3');
     expect($response->status->successful)->toBeTrue();
 });
 
