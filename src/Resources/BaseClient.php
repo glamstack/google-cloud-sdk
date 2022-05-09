@@ -89,12 +89,32 @@ abstract class BaseClient
         ];
     }
 
-    protected function getConfigApiScopes(string $connection_key){
+    /**
+     * Get the api_scopes from the configuration file
+     *
+     * @param string $connection_key
+     *     The connection key provided during initialization of the SDK
+     *
+     * @return array
+     */
+    protected function getConfigApiScopes(string $connection_key): array
+    {
         return config(self::CONFIG_PATH . 'connections.' . $connection_key .
             '.api_scopes');
     }
 
-    protected function getConfigSubjectEmail(string $connection_key){
+    /**
+     * Get the subject_email from the configuration file
+     *
+     * Subject email is not required so if not set then return null
+     *
+     * @param string $connection_key
+     *      The connection key provided during initialization of the SDK
+     *
+     * @return string|null
+     */
+    protected function getConfigSubjectEmail(string $connection_key): string|null
+    {
         $config_path = self::CONFIG_PATH . 'connections.' . $connection_key;
         if(array_key_exists('subject_email', config($config_path))){
             return config($config_path . '.subject_email');
@@ -103,12 +123,32 @@ abstract class BaseClient
         }
     }
 
-    protected function getConfigJsonFilePath(string $connection_key){
+    /**
+     * Get the json_key_file from the configuration file
+     *
+     * This is required if using the configuration file
+     *
+     * @param string $connection_key
+     *      The connection key provided during initialization of the SDK
+     *
+     * @return string
+     */
+    protected function getConfigJsonFilePath(string $connection_key): string
+    {
         return config(self::CONFIG_PATH . 'connections.' . $connection_key .
             '.json_key_file');
     }
 
-    protected function parseConnectionConfigArray(array $connection_config){
+    /**
+     * Parse the connection_config array to get the configuration parameters
+     *
+     * @param array $connection_config
+     *      The connection config array provided during initialization of the SDK
+     *
+     * @return array
+     */
+    protected function parseConnectionConfigArray(array $connection_config): array
+    {
         return [
             'api_scopes' => $this->getConfigArrayApiScopes($connection_config),
             'subject_email' => $this->getConfigArraySubjectEmail($connection_config),
@@ -117,11 +157,31 @@ abstract class BaseClient
         ];
     }
 
-    protected function getConfigArrayApiScopes(array $connection_config){
+    /**
+     * Get the api_scopes from the connection_config array
+     *
+     * @param array $connection_config
+     *      The connection config array provided during initialization of the SDK
+     *
+     * @return array
+     */
+    protected function getConfigArrayApiScopes(array $connection_config): array
+    {
         return $connection_config['api_scopes'];
     }
 
-    protected function getConfigArraySubjectEmail(array $connection_config){
+    /**
+     * Get the subject_email from the connection_config array
+     *
+     * Subject Email is not required so if not set return null
+     *
+     * @param array $connection_config
+     *      The connection config array provided during initialization of the SDK
+     *
+     * @return string|null
+     */
+    protected function getConfigArraySubjectEmail(array $connection_config): string|null
+    {
         if(array_key_exists('subject_email', $connection_config)){
             return $connection_config['subject_email'];
         } else {
@@ -129,7 +189,18 @@ abstract class BaseClient
         }
     }
 
-    protected function getConfigArrayFilePath(array $connection_config){
+    /**
+     * Get the file_path from the connection_config array
+     *
+     * file_path is not required to be set so if not set return null
+     *
+     * @param array $connection_config
+     *      The connection config array provided during initialization of the SDK
+     *
+     * @return string|null
+     */
+    protected function getConfigArrayFilePath(array $connection_config): string|null
+    {
         if(array_key_exists('file_path', $connection_config)){
             return $connection_config['file_path'];
         } else {
@@ -137,7 +208,18 @@ abstract class BaseClient
         }
     }
 
-    protected function getConfigArrayJsonKey(array $connection_config){
+    /**
+     * Get the json_key from the connection_config array
+     *
+     * json_key i9s not required to be set so if not set return null
+     *
+     * @param array $connection_config
+     *      The connection config array provided during initialization of the SDK
+     *
+     * @return mixed|null
+     */
+    protected function getConfigArrayJsonKey(array $connection_config): mixed
+    {
         if(array_key_exists('json_key', $connection_config)){
             return $connection_config['json_key'];
         } else {
@@ -145,7 +227,13 @@ abstract class BaseClient
         }
     }
 
-    protected function setProjectId(){
+    /**
+     * Set the project_id class level variable
+     *
+     * @return void
+     */
+    protected function setProjectId(): void
+    {
         if($this->api_client->connection_key){
             $this->project_id = config(
                 self::CONFIG_PATH . 'connections.' .
@@ -155,114 +243,19 @@ abstract class BaseClient
             $this->project_id = $this->api_client->connection_config['project_id'];
         }
     }
-//    protected function setAuthToken(){
-//        $this->auth_token = $this->api_client->auth_token;
-//    }
 
     /**
      * Google API GET Request
      *
-     * Example Usage:
-     * ```php
-     * $google_workspace_api = new \Glamstack\GoogleWorkspace\GoogleDriveApiClient();
-     * $user_key = 'klibby@example.com`;
-     * $google_workspace_api->get('/users/'.$user_key);
-     * ```
-     *
-     * Example Response:
-     * ```php
-     * {#1268
-     *   +"headers": {#1216
-     *     +"ETag": (truncated)
-     *     +"Content-Type": "application/json; charset=UTF-8"
-     *     +"Vary": "Origin X-Origin Referer"
-     *     +"Date": "Mon, 24 Jan 2022 17:25:15 GMT"
-     *     +"Server": "ESF"
-     *     +"Content-Length": "1259"
-     *     +"X-XSS-Protection": "0"
-     *     +"X-Frame-Options": "SAMEORIGIN"
-     *     +"X-Content-Type-Options": "nosniff"
-     *     +"Alt-Svc": (truncated)
-     *   }
-     *   +"json": (truncated)
-     *   +"object": {#1251
-     *     +"kind": "admin#directory#user"
-     *     +"id": "114522752583947996869"
-     *     +"etag": (truncated)
-     *     +"primaryEmail": "klibby@example.com"
-     *     +"name": {#1248
-     *       +"givenName": "Kate"
-     *       +"familyName": "Libby"
-     *       +"fullName": "Kate Libby"
-     *     }
-     *     +"isAdmin": true
-     *     +"isDelegatedAdmin": false
-     *     +"lastLoginTime": "2022-01-21T17:44:13.000Z"
-     *     +"creationTime": "2021-12-08T13:15:43.000Z"
-     *     +"agreedToTerms": true
-     *     +"suspended": false
-     *     +"archived": false
-     *     +"changePasswordAtNextLogin": false
-     *     +"ipWhitelisted": false
-     *     +"emails": array:3 [
-     *       0 => {#1260
-     *         +"address": "klibby@example.com"
-     *         +"type": "work"
-     *       }
-     *       1 => {#1259
-     *         +"address": "klibby@example-test.com"
-     *         +"primary": true
-     *       }
-     *       2 => {#1255
-     *         +"address": "klibby@example.com.test-google-a.com"
-     *       }
-     *     ]
-     *     +"phones": array:1 [
-     *       0 => {#1214
-     *         +"value": "5555555555"
-     *         +"type": "work"
-     *       }
-     *     ]
-     *     +"languages": array:1 [
-     *       0 => {#1271
-     *         +"languageCode": "en"
-     *         +"preference": "preferred"
-     *       }
-     *     ]
-     *     +"nonEditableAliases": array:1 [
-     *       0 => "klibby@example.com.test-google-a.com"
-     *     ]
-     *     +"customerId": "C000nnnnn"
-     *     +"orgUnitPath": "/"
-     *     +"isMailboxSetup": true
-     *     +"isEnrolledIn2Sv": false
-     *     +"isEnforcedIn2Sv": false
-     *     +"includeInGlobalAddressList": true
-     *   }
-     *   +"status": {#1269
-     *     +"code": 200
-     *     +"ok": true
-     *     +"successful": true
-     *     +"failed": false
-     *     +"serverError": false
-     *     +"clientError": false
-     *   }
-     * }
-     * ```
-     *
-     * @param string $uri The URI of the Google Workspace API request with
-     * a leading slash after `https://admin.googleapis.com/admin/directory/v1`
+     * @param string $uri The URI of the Google Cloud API
      *
      * @param array $request_data (Optional) Optional request data to send with
-     * the Google Workspace API GET request
+     * the Google Cloud API GET request
      *
      * @return object|string
      */
     public function getRequest(string $uri, array $request_data = []): object|string
     {
-        // Append the Google Domain and Google Customer ID to the request data
-//        $request_data = array_merge($request_data, $this->required_parameters);
-
         $response = Http::withToken($this->auth_token)
             ->withHeaders($this->api_client->request_headers)
             ->get($uri, $request_data);
@@ -291,79 +284,21 @@ abstract class BaseClient
         // Parse the API response and return a Glamstack standardized response
         $parsed_api_response = $this->parseApiResponse($response, $isPaginated);
 
+        $this->logResponse($uri, $parsed_api_response);
         return $parsed_api_response;
     }
 
     /**
-     * Google Workspace API POST Request. Google will utilize POST request for
+     * Google Cloud API POST Request. Google will utilize POST request for
      * inserting a new resource.
      *
      * This method is called from other services to perform a POST request and
      * return a structured object.
      *
-     * Example Usage:
-     * ```php
-     * $google_workspace_api = new \Glamstack\GoogleWorkspace\GoogleDriveApiClient();
-     * $google_workspace_api->post('/users/',
-     *     [
-     *         'name' => [
-     *             'givenName' => 'Kate',
-     *             'familyName' => 'Libby'
-     *         ],
-     *         'password' => 'ac!dBurnM3ss3sWithTheB4$t',
-     *         'primaryEmail' => 'klibby@example.com'
-     *     ]
-     * );
-     * ```
-     *
-     * Example Response:
-     * ```php
-     * {#1214
-     *   +"headers": {#1233
-     *     +"ETag": (truncated)
-     *     +"Content-Type": "application/json; charset=UTF-8"
-     *     +"Vary": "Origin X-Origin Referer"
-     *     +"Date": "Mon, 24 Jan 2022 17:35:55 GMT"
-     *     +"Server": "ESF"
-     *     +"Content-Length": "443"
-     *     +"X-XSS-Protection": "0"
-     *     +"X-Frame-Options": "SAMEORIGIN"
-     *     +"X-Content-Type-Options": "nosniff"
-     *     +"Alt-Svc": (truncated)
-     *   }
-     *   +"json": (truncated)
-     *   +"object": {#1231
-     *     +"kind": "admin#directory#user"
-     *     +"id": "115712261629077226469"
-     *     +"etag": (truncated)
-     *     +"primaryEmail": "klibby@example.com"
-     *     +"name": {#1255
-     *       +"givenName": "Kate"
-     *       +"familyName": "Libby"
-     *     }
-     *     +"isAdmin": false
-     *     +"isDelegatedAdmin": false
-     *     +"creationTime": "2022-01-24T17:35:54.000Z"
-     *     +"customerId": "C000nnnnn"
-     *     +"orgUnitPath": "/"
-     *     +"isMailboxSetup": false
-     *   }
-     *   +"status": {#1260
-     *     +"code": 200
-     *     +"ok": true
-     *     +"successful": true
-     *     +"failed": false
-     *     +"serverError": false
-     *     +"clientError": false
-     *   }
-     * }
-     * ```
-     *
-     * @param string $uri The URI of the Google Workspace API request with
-     * a leading slash after `https://admin.googleapis.com/admin/directory/v1`
+     * @param string $uri The URI of the Google Cloud API request with
      *
      * @param array $request_data (Optional) Optional request data to send with
-     * the Google Workspace API POST request
+     * the Google Cloud API POST request
      *
      * @return object|string
      */
@@ -373,180 +308,79 @@ abstract class BaseClient
         $request = Http::withToken($this->auth_token)
             ->withHeaders($this->api_client->request_headers)
             ->post($uri, $request_data);
+
         // Parse the API request's response and return a Glamstack standardized
         // response
         $response = $this->parseApiResponse($request);
 
-        return $response;
-    }
-
-    public function patchRequest(string $uri, array $request_data = []): object|string
-    {
-        // Append to Google Domain and Google Customer ID to the request data
-        $request_data = array_merge($request_data, $this->required_parameters);
-        $request = Http::withToken($this->auth_token)
-            ->withHeaders($this->api_client->request_headers)
-            ->patch($uri, $request_data);
-        // Parse the API request's response and return a Glamstack standardized
-        // response
-        $response = $this->parseApiResponse($request);
+        $this->logResponse($uri, $response);
 
         return $response;
     }
 
     /**
-     * Google Workspace API PUT Request. Google will utilize PUT request for
-     * updating an existing resource.
+     * Google Cloud API PATCH Request
+     *
+     * @param string $uri The URI of the Google Cloud API request with
+     *
+     * @param array $request_data (Optional) Optional request data to send with
+     * the Google Cloud API POST request
+     *
+     * @return object|string
+     */
+    public function patchRequest(string $uri, array $request_data = []): object|string
+    {
+        $request = Http::withToken($this->auth_token)
+            ->withHeaders($this->api_client->request_headers)
+            ->patch($uri, $request_data);
+
+        // Parse the API request's response and return a Glamstack standardized
+        // response
+        $response = $this->parseApiResponse($request);
+
+        $this->logResponse($uri, $response);
+
+        return $response;
+    }
+
+    /**
+     * Google Cloud API PUT Request.
      *
      * This method is called from other services to perform a PUT request and
      * return a structured object
      *
-     * Example Usage:
-     * ```php
-     * $google_workspace_api = new \Glamstack\GoogleWorkspace\GoogleDriveApiClient();
-     * $user_key = 'klibby@example.com';
-     * $google_workspace_api->put('/users/' . $user_key,
-     *     [
-     *         name => [
-     * .            'familyName' => 'Libby-Murphy'
-     *         ]
-     *     ]
-     * );
-     * ```
-     *
-     * Example Response:
-     * ```php
-     *    {#1271
-     *   +"headers": {#1224
-     *     +"ETag": (truncated)
-     *     +"Content-Type": "application/json; charset=UTF-8"
-     *     +"Vary": "Origin X-Origin Referer"
-     *     +"Date": "Mon, 24 Jan 2022 17:45:47 GMT"
-     *     +"Server": "ESF"
-     *     +"Content-Length": "917"
-     *     +"X-XSS-Protection": "0"
-     *     +"X-Frame-Options": "SAMEORIGIN"
-     *     +"X-Content-Type-Options": "nosniff"
-     *     +"Alt-Svc": (truncated)
-     *   }
-     *   +"json": (truncated)
-     *   +"object": {#1222
-     *     +"kind": "admin#directory#user"
-     *     +"id": "115712261629077226469"
-     *     +"etag": (truncated)
-     *     +"primaryEmail": "klibby@example.com"
-     *     +"name": {#1255
-     *       +"familyName": "Libby-Murphy"
-     *     }
-     *     +"isAdmin": false
-     *     +"isDelegatedAdmin": false
-     *     +"lastLoginTime": "1970-01-01T00:00:00.000Z"
-     *     +"creationTime": "2022-01-24T17:35:54.000Z"
-     *     +"agreedToTerms": false
-     *     +"suspended": false
-     *     +"archived": false
-     *     +"changePasswordAtNextLogin": false
-     *     +"ipWhitelisted": false
-     *     +"emails": array:2 [
-     *       0 => {#1260
-     *         +"address": "klibby@example.com"
-     *         +"primary": true
-     *       }
-     *       1 => {#1248
-     *         +"address": "klibby@example.com.test-google-a.com"
-     *       }
-     *     ]
-     *     +"nonEditableAliases": array:1 [
-     *       0 => "klibby@example.com.test-google-a.com"
-     *     ]
-     *     +"customerId": "C000nnnnn"
-     *     +"orgUnitPath": "/"
-     *     +"isMailboxSetup": false
-     *     +"includeInGlobalAddressList": true
-     *     +"recoveryEmail": ""
-     *   }
-     *   +"status": {#1251
-     *     +"code": 200
-     *     +"ok": true
-     *     +"successful": true
-     *     +"failed": false
-     *     +"serverError": false
-     *     +"clientError": false
-     *   }
-     * }
-     * ```
-     *
-     * @param string $uri The URI of the Google Workspace API request with
-     * a leading slash after `https://admin.googleapis.com/admin/directory/v1`
+     * @param string $uri The URI of the Google Cloud API request
      *
      * @param array $request_data (Optional) Optional request data to send with
-     * the Google Workspace API PUT request
+     * the Google Cloud API PUT request
      *
      * @return object|string
      */
     public function putRequest(string $uri, array $request_data = []): object|string
     {
-        // Append to Google Domain and Google Customer ID to the request data
-        $request_data = array_merge($request_data, $this->required_parameters);
-
         $request = Http::withToken($this->auth_token)
-            ->withHeaders($this->request_headers)
+            ->withHeaders($this->api_client->request_headers)
             ->put($uri, $request_data);
 
         // Parse the API request's response and return a Glamstack standardized
         // response
         $response = $this->parseApiResponse($request);
 
+        $this->logResponse($uri, $response);
+
         return $response;
     }
 
     /**
-     * Google Workspace API DELETE Request. Google will utilize DELETE request
-     * for removing an existing resource from the workspace.
+     * Google Cloud API DELETE Request
      *
      * This method is called from other services to perform a DELETE request
      * and return a structured object.
      *
-     * Example Usage:
-     * ```php
-     * $google_workspace_api = new \Glamstack\GoogleWorkspace\GoogleDriveApiClient();
-     * $user_key = 'klibby@example.com';
-     * $google_workspace_api->delete('/users/' . $user_key);
-     * ```
-     *
-     * Example Response:
-     * ```php
-     * {#1255
-     *   +"headers": {#1216
-     *     +"ETag": (truncated)
-     *     +"Vary": "Origin X-Origin Referer"
-     *     +"Date": "Mon, 24 Jan 2022 17:50:04 GMT"
-     *     +"Content-Type": "text/html"
-     *     +"Server": "ESF"
-     *     +"Content-Length": "0"
-     *     +"X-XSS-Protection": "0"
-     *     +"X-Frame-Options": "SAMEORIGIN"
-     *     +"X-Content-Type-Options": "nosniff"
-     *     +"Alt-Svc": (truncated)
-     *   }
-     *   +"json": "null"
-     *   +"object": null
-     *   +"status": {#1214
-     *     +"code": 204
-     *     +"ok": false
-     *     +"successful": true
-     *     +"failed": false
-     *     +"serverError": false
-     *     +"clientError": false
-     *   }
-     * }
-     * ```
-     *
-     * @param string $uri The URI of the Google Workspace API request with
-     * a leading slash after `https://admin.googleapis.com/admin/directory/v1`
+     * @param string $uri The URI of the Google Cloud API request
      *
      * @param array $request_data (Optional) Optional request data to send with
-     * the Google Workspace API DELETE request
+     * the Google Cloud API DELETE request
      *
      * @return object|string
      */
@@ -562,13 +396,15 @@ abstract class BaseClient
         // response
         $response = $this->parseApiResponse($request);
 
+        $this->logResponse($uri, $response);
+
         return $response;
     }
 
     /**
-     * Check if pagination is used in the Google Workspace GET response.
+     * Check if pagination is used in the Google Cloud GET response.
      *
-     * @param Response $response API response from Google Workspace GET request
+     * @param Response $response API response from Google Cloud GET request
      *
      * @return bool True if pagination is required | False if not
      * @see GOOGLE PAGINATION EXAMPLE
@@ -576,7 +412,7 @@ abstract class BaseClient
      */
     protected function checkForPagination(Response $response): bool
     {
-        // Check if Google Workspace GET Request object contains `nextPageToken`
+        // Check if Google Cloud GET Request object contains `nextPageToken`
         if(property_exists($response->object(), 'nextPageToken')) {
             return true;
         } else {
@@ -585,16 +421,16 @@ abstract class BaseClient
     }
 
     /**
-     * Helper method for getting Google Workspace GET responses that require
+     * Helper method for getting Google Cloud GET responses that require
      * pagination
      *
-     * @param string $uri The URI of the Google Workspace API request with
+     * @param string $uri The URI of the Google Cloud API request with
      * a leading slash after `https://admin.googleapis.com/admin/directory/v1`
      *
      * @param array $request_data Request data to send with the Google
-     * Workspace API GET request
+     * Cloud API GET request
      *
-     * @param Response $response API response from Google Workspace GET request
+     * @param Response $response API response from Google Cloud GET request
      *
      * @return array
      */
@@ -682,7 +518,7 @@ abstract class BaseClient
      *
      * @see https://cloud.google.com/apis/design/design_patterns#list_pagination
      *
-     * @param Response $response Google Workspace API GET Request Guzzle
+     * @param Response $response Google Cloud API GET Request Guzzle
      * response
      *
      * @return string
@@ -693,16 +529,15 @@ abstract class BaseClient
     }
 
     /**
-     * Helper function to get the next page of a Google Workspace API GET
+     * Helper function to get the next page of a Google Cloud API GET
      * request.
      *
-     * @param string $uri The URI of the Google Workspace API request with
-     * a leading slash after `https://admin.googleapis.com/admin/directory/v1`
+     * @param string $uri The URI of the Google Cloud API request
      *
      * @param array $request_data Request data to send with the Google
-     * Workspace API GET request.
+     * Cloud API GET request.
      *
-     * @param Response $response API response from Google Workspace GET request
+     * @param Response $response API response from Google Cloud GET request
      *
      * @return Response
      */
@@ -713,18 +548,18 @@ abstract class BaseClient
     ): Response
     {
 
-        // Set the Google Workspace Query parameter `pageToken` to the
+        // Set the Google Cloud Query parameter `pageToken` to the
         // responses `nextPageToken` element
         $next_page = [
             'pageToken' => $this->getNextPageToken($response)
         ];
 
         // Merge the `request_data` with the `next_page` this tells Google
-        // Workspace that we are working with a paginated response
+        // Cloud that we are working with a paginated response
         $request_body = array_merge($request_data, $next_page);
 
         $records = Http::withToken($this->auth_token)
-            ->withHeaders($this->request_headers)
+            ->withHeaders($this->api_client->request_headers)
             ->get($uri, $request_body);
 
         return $records;
@@ -733,7 +568,7 @@ abstract class BaseClient
     /**
      * Helper method to get just the response data from the Response object
      *
-     * @param Response $response API response from Google Workspace GET request
+     * @param Response $response API response from Google Cloud GET request
      *
      * @return object
      */
@@ -859,75 +694,37 @@ abstract class BaseClient
      *
      * Example Response:
      * ```php
-     * {#1268
-     *   +"headers": {#1216
-     *     +"ETag": (truncated)
+     * {#516
+     *   +"headers": {#461
      *     +"Content-Type": "application/json; charset=UTF-8"
-     *     +"Vary": "Origin X-Origin Referer"
-     *     +"Date": "Mon, 24 Jan 2022 17:25:15 GMT"
+     *     +"Vary": "X-Origin Referer Origin,Accept-Encoding"
+     *     +"Date": "Mon, 09 May 2022 17:29:17 GMT"
      *     +"Server": "ESF"
-     *     +"Content-Length": "1259"
+     *     +"Cache-Control": "private"
      *     +"X-XSS-Protection": "0"
      *     +"X-Frame-Options": "SAMEORIGIN"
      *     +"X-Content-Type-Options": "nosniff"
      *     +"Alt-Svc": (truncated)
+     *     +"Accept-Ranges": "none"
+     *     +"Transfer-Encoding": "chunked"
      *   }
-     *   +"json": (truncated)
-     *   +"object": {#1251
-     *     +"kind": "admin#directory#user"
-     *     +"id": "114522752583947996869"
-     *     +"etag": (truncated)
-     *     +"primaryEmail": "klibby@example.com"
-     *     +"name": {#1248
-     *       +"givenName": "Kate"
-     *       +"familyName": "Libby"
-     *       +"fullName": "Kate Libby"
+     *   +"json": "{"name":"example-zone","dnsName":"examplezone.example.com.","description":"","id":"1234567890","nameServers":["example.googledomains.com."],"creationTime":"2022-03-03T13:54:00.009Z","visibility":"private","cloudLoggingConfig":{"kind":"dns#managedZoneCloudLoggingConfig"},"kind":"dns#managedZone"}"
+     *   +"object": {#500
+     *     +"name": "example-zone"
+     *     +"dnsName": "examplezone.example.com."
+     *     +"description": ""
+     *     +"id": "1234567890"
+     *     +"nameServers": array:1 [
+     *       0 => "example.googledomains.com."
+     *     ]
+     *     +"creationTime": "2022-03-03T13:54:00.009Z"
+     *     +"visibility": "private"
+     *     +"cloudLoggingConfig": {#473
+     *       +"kind": "dns#managedZoneCloudLoggingConfig"
      *     }
-     *     +"isAdmin": true
-     *     +"isDelegatedAdmin": false
-     *     +"lastLoginTime": "2022-01-21T17:44:13.000Z"
-     *     +"creationTime": "2021-12-08T13:15:43.000Z"
-     *     +"agreedToTerms": true
-     *     +"suspended": false
-     *     +"archived": false
-     *     +"changePasswordAtNextLogin": false
-     *     +"ipWhitelisted": false
-     *     +"emails": array:3 [
-     *       0 => {#1260
-     *         +"address": "klibby@example.com"
-     *         +"type": "work"
-     *       }
-     *       1 => {#1259
-     *         +"address": "klibby@example-test.com"
-     *         +"primary": true
-     *       }
-     *       2 => {#1255
-     *         +"address": "klibby@example.com.test-google-a.com"
-     *       }
-     *     ]
-     *     +"phones": array:1 [
-     *       0 => {#1214
-     *         +"value": "5555555555"
-     *         +"type": "work"
-     *       }
-     *     ]
-     *     +"languages": array:1 [
-     *       0 => {#1271
-     *         +"languageCode": "en"
-     *         +"preference": "preferred"
-     *       }
-     *     ]
-     *     +"nonEditableAliases": array:1 [
-     *       0 => "klibby@example.com.test-google-a.com"
-     *     ]
-     *     +"customerId": "C000nnnnn"
-     *     +"orgUnitPath": "/"
-     *     +"isMailboxSetup": true
-     *     +"isEnrolledIn2Sv": false
-     *     +"isEnforcedIn2Sv": false
-     *     +"includeInGlobalAddressList": true
+     *     +"kind": "dns#managedZone"
      *   }
-     *   +"status": {#1269
+     *   +"status": {#499
      *     +"code": 200
      *     +"ok": true
      *     +"successful": true
@@ -961,65 +758,5 @@ abstract class BaseClient
                 'clientError' => $response->clientError(),
             ],
         ];
-    }
-
-    /**
-     * Create an info log entry for an API call
-     *
-     * @param string $method The lowercase name of the method that calls this function (ex. `get`)
-     *
-     * @param string $endpoint The URL of the API call including the concatenated base URL and URI
-     *
-     * @param string $status_code The HTTP response status code (ex. `200`)
-     *
-     * @return void
-     */
-    public function logInfo(string $method, string $endpoint, string $status_code): void
-    {
-        $message = Str::upper($method).' '.$status_code.' '.$endpoint;
-
-        Log::stack((array) config(self::CONFIG_PATH . 'log_channels'))
-            ->info($message, [
-                'event_type' => 'google-workspace-api-response-info',
-                'class' => get_class(),
-                'status_code' => $status_code,
-                'message' => $message,
-                'api_method' => Str::upper($method),
-                'api_endpoint' => $endpoint,
-                'google_connection' => $this->connection_key,
-                'google_domain' => $this->google_domain,
-                'google_customer_id' => $this->customer_id
-            ]);
-    }
-
-    /**
-     * Handle Google Workspace API Exception
-     *
-     * @param RequestException $exception An instance of the exception
-     *
-     * @param string $log_class get_class()
-     *
-     * @param string $reference Reference slug or identifier
-     *
-     * @return string Error message
-     */
-    public function handleException(
-        RequestException $exception,
-        string $log_class,
-        string $reference
-    ): string
-    {
-        Log::stack((array) config(self::CONFIG_PATH . 'log_channels'))
-            ->error($exception->getMessage(), [
-                'event_type' => 'google-workspace-api-response-error',
-                'class' => $log_class,
-                'status_code' => $exception->getCode(),
-                'message' => $exception->getMessage(),
-                'reference' => $reference,
-                'gitlab_instance' => $this->instance_key,
-                'gitlab_version' => $this->gitlab_version,
-            ]);
-
-        return $exception->getMessage();
     }
 }
