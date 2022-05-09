@@ -41,7 +41,12 @@ abstract class BaseClient
         }
 
         // Authenticate with Google OAuth2 Server auth_token
-        $this->auth_token = $google_auth->authenticate();
+        try{
+            $this->auth_token = $google_auth->authenticate();
+        } catch (Exception $exception) {
+            $this->logLocalError($exception);
+            throw $exception;
+        }
     }
 
     protected function parseConfigFile(string $connection_key){
