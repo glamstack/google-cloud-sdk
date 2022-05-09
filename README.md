@@ -101,7 +101,39 @@ $response = $client->dns()->managedZone()->get('testing-zone');
 
 ## Logging Configuration
 
-### Creating a Log Channel
+By default, we use the `single` channel for all logs that is configured in your application's `config/logging.php` file. This sends all Google Workspace log messages to the `storage/logs/laravel.log` file.
+
+If you would like to see Google Cloud logs in a separate log file that is easier to triage without unrelated log messages, you can create a custom log channel.  For example, we recommend using the value of `glamstack-google-cloud`, however you can choose any name you would like.
+
+Add the custom log channel to `config/logging.php`.
+
+### Creating A Log Channel
+
+```php
+    'channels' => [
+
+        // Add anywhere in the `channels` array
+
+        'glamstack-google-cloud' => [
+            'name' => 'glamstack-google-cloud',
+            'driver' => 'single',
+            'level' => 'debug',
+            'path' => storage_path('logs/glamstack-google-cloud.log'),
+        ],
+    ],
+```
+
+Update the `channels.stack.channels` array to include the array key (ex.  `glamstack-google-cloud`) of your custom channel. Be sure to add `glamstack-google-cloud` to the existing array values and not replace the existing values.
+
+```php
+    'channels' => [
+        'stack' => [
+            'driver' => 'stack',
+            'channels' => ['single','slack', 'glamstack-google-cloud'],
+            'ignore_exceptions' => false,
+        ],
+    ],
+```
 
 ## Security Best Practices
 
