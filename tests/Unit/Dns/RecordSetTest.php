@@ -34,7 +34,7 @@ it('does not meet the record requirements', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
         'subject_email' => 'dwheeler@gitlab.com',
-        'file_path' => 'storage/keys/glamstack-google-cloud/test.json',
+        'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => 'dwheeler-277df745'
     ]);
     $client->dns()->recordSet()->create('testing-zone', [
