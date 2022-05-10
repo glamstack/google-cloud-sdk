@@ -137,7 +137,7 @@ return [
             'api_scopes' => [
                 'https://www.googleapis.com/auth/ndev.clouddns.readwrite'
             ],
-            'json_key_file' => storage_path('keys/glamstack-google-cloud/test.json'),
+            'json_key_file_path' => storage_path('keys/glamstack-google-cloud/test.json'),
             'log_channels' => ['single']
         ],
 
