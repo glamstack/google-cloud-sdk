@@ -237,14 +237,47 @@ It is a recommended to store a copy of each JSON API key in your preferred passw
 
 ### Valid
 
-### Invalid
+```bash
 
-### Missing
+```
 
-### Invalid or Mismatched
+### Authentication Failure
 
-## Testing
+```bash
+[2022-05-09 16:45:07] testing.INFO: Google OAuth2 Authentication Failed {"calling_method":"__CONSTRUCT","class":"Glamstack\\GoogleCloud\\Resources\\BaseClient","event_type":"google-auth-api-response-info","message":"Google OAuth2 Authentication Failed"} 
+
+```
+
+## Test Suite
+
+This SDK has test written with the [Pest](https://pestphp.com/) Framework.
+
+### Running The Test
+
+To run all test in the SDK from the project directory run the following
+
+```bash
+./vendor/bin/pest
+```
+
+Alternatively you can utilize build in composer commands to run the test:
+
+```bash
+composer test
+```
+
+or
+
+To run the test with a coverage report run the following:
+
+```bash
+composer test-coverage 
+```
 
 ## Issue Tracking and Bug Reports
 
+Please visit our [issue tracker](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-cloud-sdk/-/issues) and create an issue or comment on an existing issue.
+
 ## Contributing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) to learn more about how to contribute.
