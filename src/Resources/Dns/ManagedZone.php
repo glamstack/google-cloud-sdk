@@ -61,13 +61,14 @@ class ManagedZone extends BaseClient
      *
      * @param array $request_data
      *      Required managed zone properties for creation
+     * 
      *      ```php
      *      [
-     *      'name' => (string) GCP Managed Zone name,
-     *      'dns_name' => (string) The DNS name of this managed zone with a trailing period (ex. "example.com."),
-     *      'visibility' => (string) The zone's visibility: public zones are exposed to the Internet while private zones are visible only to Virtual Private Cloud resources. ("public" or "private"),
-     *      'dnssec_config_state' => (string) DNSSEC configuration ("on" or "off"),
-     *      'description' => (string) A short description of the managed zone
+     *          'name' => (string) GCP Managed Zone name,
+     *          'dns_name' => (string) The DNS name of this managed zone with a trailing period (ex. "example.com."),
+     *          'visibility' => (string) The zone's visibility: public zones are exposed to the Internet while private zones are visible only to Virtual Private Cloud resources. ("public" or "private"),
+     *          'dnssec_config_state' => (string) DNSSEC configuration ("on" or "off"),
+     *          'description' => (string) A short description of the managed zone
      *      ]
      *      ```
      *
