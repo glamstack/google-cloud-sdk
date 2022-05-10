@@ -9,6 +9,7 @@
         "cloud",
         "google"
     ],
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Dillon Wheeler",
