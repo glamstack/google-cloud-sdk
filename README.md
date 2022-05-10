@@ -72,13 +72,91 @@ The version number represents the release date in `vY.M.D` format.
 1. We update each of our project `composer.json` files that use this package to specific or new version numbers during scheduled change windows without worrying about differences and/or breaking changes with "staying up to date with the latest version". We don't maintain any forks or divergent branches.
 1. Our packages use underlying packages in your existing Laravel application, so keeping your Laravel application version up-to-date addresses most security concerns.
 
+## Usage Instructions
+
+Initialization of this package can be done either by passing in a (string) [connection_key](#connection-keys) or by passing in a (array) [connection_config](#connection-config-array)
+
 ### Connection Keys
 
-TODO
+To utilize the `connection_key` initialization of the SDK the `glamstack-google-cloud.php` configuration file must be updated with the connection you want to utilize (See [Example Connection Key Configuration](#example-connection-key-configuration-initialization)).
+
+After completing the `glamstack-google-cloud.php` configuration file you can utilize the connection key from the file by passing in the `connection key` name (See [Example Connection Key Initialization](#example-connection-key-initialization))
+
+This will allow for configuring of multiple different connections to be utilized by the SDK.
+
+#### Example Connection Key Initialization
+
+```php
+// Initialize the SDK to use `gcp_project_1` configuration from `glamstack-google-cloud.php`
+$client = new Glamstack\GoogleCloud\ApiClient('gcp_project_1');
+```
+
+#### Example Connection Key Configuration Initialization
+
+```php
+return [    
+    'connections' => [
+        'gcp_project_1' => [
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'api_scopes' => [
+                'https://www.googleapis.com/auth/ndev.clouddns.readwrite'
+            ],
+            'json_key_file' => storage_path('keys/glamstack-google-cloud/gcp_project_1.json'),
+            'log_channels' => ['single']
+        ]
+    ]
+]
+```
+
+### Connection Config Array
+
+To utilize the `connection_config` array of the SDK you are not required to have an updated configuration in the `glamstack-google-cloud.php` configuration file. Instead, you have the ability to pass in the required configurations via an array (See [Example Connection Config Array Initialization](#example-connection-config-array-initialization)).
+
+#### Required Parameters
+
+1. `api_scopes` (Array)
+    * Array of the API Scopes needed for the APIs to be used
+2. `project_id` (String)
+    * The Google Project ID to run the API call on
+3. `json_key_file_path` (String) **OR** `json_key` (String)
+
+#### Example Connection Config Array Initialization
+
+##### Using A Stored Google JSON Auth Key
+
+```php
+$client = new Glamstack\GoogleCloud\ApiClient(null, [
+    'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
+    'json_key_file_path' => 'storage/keys/glamstack-google-cloud/gcp_project_1.json',
+    'project_id' => 'example_project_id_123'
+]);
+```
+
+##### Using The `json_key` Parameter
+```php
+$json_string = '{
+    "type": "service_account",
+    "project_id": "project_id",
+    "private_key_id": "key_id",
+    "private_key": "key_data",
+    "client_email": "xxxxx@xxxxx.iam.gserviceaccount.com",
+    "client_id": "123455667897654",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "some stuff"
+}';
+
+$client = new Glamstack\GoogleCloud\ApiClient(null, [
+    'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
+    'subject_email' => 'example@example.com',
+    'json_key' => $json_string
+]);
+```
 
 ### Using Pre-Configured Endpoints
 
-TODO
+The pre-configured endpoints in this SDK contain input validation as and are verified via testing with [Pest](https://pestphp.com/)
 
 #### Available Endpoints
 
@@ -93,8 +171,16 @@ $client = new Glamstack\GoogleCloud\ApiClient('test');
 $response = $client->dns()->managedZone()->get('testing-zone');
 ```
 
-
 ### Custom Non-Configured Connections
+
+Due to the time constraints this SDK also has the ability to create HTTP calls to any Google Cloud API endpoint utilizing the Rest resource. The Rest resource will allow you to input any Google Cloud API endpoint as the uri and it will run the method you called on that endpoint.
+
+#### Example Inline Usage
+
+```php
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+$response = $client->rest()->get('https://dns.googleapis.com/dns/v1/projects/' . env('GOOGLE_CLOUD_TEST_PROJECT_ID') . '/managedZones', []);
+```
 
 ## Logging Configuration
 
@@ -156,6 +242,8 @@ It is a recommended to store a copy of each JSON API key in your preferred passw
 ### Missing
 
 ### Invalid or Mismatched
+
+## Testing
 
 ## Issue Tracking and Bug Reports
 
