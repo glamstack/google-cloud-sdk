@@ -20,7 +20,7 @@ it('can list recordset', function () {
 it('can list recordset with custom configuration', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
-        'file_path' => 'storage/keys/glamstack-google-cloud/test.json',
+        'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => 'dwheeler-277df745'
     ]);
     $response = $client->dns()->recordSet()->list('testing-zone');
@@ -49,7 +49,7 @@ it('does not have the required type for rrdatas', function() {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
         'subject_email' => 'dwheeler@gitlab.com',
-        'file_path' => 'storage/keys/glamstack-google-cloud/test.json',
+        'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => 'dwheeler-277df745'
     ]);
     $client->dns()->recordSet()->create('testing-zone', [
