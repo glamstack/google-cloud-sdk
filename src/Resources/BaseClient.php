@@ -85,7 +85,7 @@ abstract class BaseClient
         return [
             'api_scopes' => $this->getConfigApiScopes($connection_key),
             'subject_email' => $this->getConfigSubjectEmail($connection_key),
-            'file_path' => $this->getConfigJsonFilePath($connection_key)
+            'json_key_file_path' => $this->getConfigJsonFilePath($connection_key)
         ];
     }
 
@@ -136,7 +136,7 @@ abstract class BaseClient
     protected function getConfigJsonFilePath(string $connection_key): string
     {
         return config(self::CONFIG_PATH . 'connections.' . $connection_key .
-            '.json_key_file');
+            '.json_key_file_path');
     }
 
     /**
@@ -152,7 +152,7 @@ abstract class BaseClient
         return [
             'api_scopes' => $this->getConfigArrayApiScopes($connection_config),
             'subject_email' => $this->getConfigArraySubjectEmail($connection_config),
-            'file_path' => $this->getConfigArrayFilePath($connection_config),
+            'json_key_file_path' => $this->getConfigArrayFilePath($connection_config),
             'json_key' => $this->getConfigArrayJsonKey($connection_config)
         ];
     }
@@ -201,8 +201,8 @@ abstract class BaseClient
      */
     protected function getConfigArrayFilePath(array $connection_config): string|null
     {
-        if(array_key_exists('file_path', $connection_config)){
-            return $connection_config['file_path'];
+        if(array_key_exists('json_key_file_path', $connection_config)){
+            return $connection_config['json_key_file_path'];
         } else {
             return null;
         }
