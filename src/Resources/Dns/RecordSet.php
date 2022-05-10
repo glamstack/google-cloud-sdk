@@ -8,7 +8,6 @@ use Glamstack\GoogleCloud\Models\Dns\RecordSetModel;
 
 class RecordSet extends BaseClient
 {
-
     const BASE_URL = 'https://dns.googleapis.com/dns/v1/projects';
 
     private RecordSetModel $recordSetModel;
@@ -43,8 +42,7 @@ class RecordSet extends BaseClient
         string $record_set,
         string $record_type,
         array $request_data = []
-    ): object|string
-    {
+    ): object|string {
         return BaseClient::getRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets/' . $record_set . '/' . $record_type, $request_data);
     }
@@ -71,27 +69,23 @@ class RecordSet extends BaseClient
     /**
      * Create a new record set in a managed zone
      *
-     * Required Parameters:
-     * ```php
-     * [
-     *      'name' => (string) The name of the record set (ex. 'testingmail.testingzone.example.com.'),
-     *      'type' => (string) The type of record set (see records-overview#supported_dns_record_types reference),
-     *      'ttl' => (int) The TTL of the record set (ex. 300)
-     *      'rrdatas' => (array) As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1) (ex. ['mail.testingzone.example.com.'])
-     * ]
-     * ```
-     *
      * @see https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets/create
-     *
      * @see https://cloud.google.com/dns/docs/records-overview#supported_dns_record_types
-     *
      * @see https://datatracker.ietf.org/doc/html/rfc1035
      *
      * @param string $managed_zone
-     *      The managed zone to create the record set in
+     *      The name of the managed zone to create the record set in
      *
      * @param array $request_data
      *      Required record set properties for creation
+     *      ```php
+     *      [
+     *          'name' => (string) The name of the record set (ex. 'testingmail.testingzone.example.com.'),
+     *          'type' => (string) The type of record set (see records-overview#supported_dns_record_types reference),
+     *          'ttl' => (int) The TTL of the record set (ex. 300)
+     *          'rrdatas' => (array) As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1) (ex. ['mail.testingzone.example.com.'])
+     *      ]
+     *      ```
      *
      * @param array $optional_request_data
      *      Optional record set properties to set
@@ -112,7 +106,7 @@ class RecordSet extends BaseClient
      * Delete a record set from a managed zone
      *
      * @param string $managed_zone
-     *      The managed zone to delete the record set from
+     *      The name of the managed zone to delete the record set from
      *
      * @param string $name
      *      The record set name to be deleted

@@ -1,18 +1,16 @@
 <?php
 
-
 namespace Glamstack\GoogleCloud\Models\Dns;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-
 class ManagedZoneModel
 {
-
     private array $options;
     private OptionsResolver $resolver;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->resolver = new OptionsResolver();
     }
 
@@ -60,7 +58,7 @@ class ManagedZoneModel
             ->required()
             ->allowedTypes('string')
             ->allowedValues('public', 'private')
-            ->info('Rather the DNS zone is public or private');
+            ->info('Whether the DNS zone is public or private');
 
         $resolver->define('dnssec_config_state')
             ->required()
@@ -77,7 +75,6 @@ class ManagedZoneModel
             ->default(true)
             ->allowedTypes('bool')
             ->info('The option to configure logging for the zone. Defaults to true');
-
     }
 
     /**

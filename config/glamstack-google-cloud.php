@@ -118,7 +118,8 @@ return [
      *      create a custom log channel and add the channel name to the
      *      array. For example, we recommend creating a custom channel
      *      (ex. `glamstack-google-cloud`), however you can choose any
-     *      name you would like.
+     *      name you would like. You could also use a log file name that
+     *      is the name of the GCP project that the logs relate to.
      *      ```php
      *      ['single', 'glamstack-google-cloud']
      *      ```
@@ -136,7 +137,6 @@ return [
             'api_scopes' => [
                 'https://www.googleapis.com/auth/ndev.clouddns.readwrite'
             ],
-            'subject_email' => env('GOOGLE_WORKSPACE_USER_EMAIL'),
             'json_key_file' => storage_path('keys/glamstack-google-cloud/test.json'),
             'log_channels' => ['single']
         ],

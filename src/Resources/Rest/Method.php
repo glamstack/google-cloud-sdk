@@ -2,12 +2,10 @@
 
 namespace Glamstack\GoogleCloud\Resources\Rest;
 
-use Glamstack\GoogleCloud\ApiClient;
 use Glamstack\GoogleCloud\Resources\BaseClient;
 
 class Method extends BaseClient
 {
-
     /**
      * Run generic GET request on Google URI
      *

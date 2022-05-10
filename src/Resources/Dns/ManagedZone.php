@@ -8,7 +8,6 @@ use Glamstack\GoogleCloud\Models\Dns\ManagedZoneModel;
 
 class ManagedZone extends BaseClient
 {
-
     const BASE_URL = 'https://dns.googleapis.com/dns/v1/projects';
 
     private ManagedZoneModel $managedZoneModel;
@@ -30,7 +29,7 @@ class ManagedZone extends BaseClient
      * @param array $optional_request_data
      *      Optional request data to use with the GET request.
      *      i.e. Utilizing the `fields` parameter
-     * 
+     *
      * @return object|string
      */
     public function get(string $managed_zone, array $optional_request_data = []): object|string
@@ -58,20 +57,19 @@ class ManagedZone extends BaseClient
     /**
      * Create a new managed zone in the Google Project
      *
-     * Required Parameters Array:
-     * ```php
-     * [
-     *      'name' => (string) GCP Managed Zone name,
-     *      'dns_name' => (string) The DNS name of this managed zone (ex. "example.com."),
-     *      'visibility' => (string) The zone's visibility: public zones are exposed to the Internet while private zones are visible only to Virtual Private Cloud resources. ("public" or "private"),
-     *      'dnssec_config_state' => (string) DNSSEC configuration ("on" or "off"),
-     *      'description' => (string) A short description of the managed zone
-     * ];
-     * ```
      * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/create
      *
      * @param array $request_data
      *      Required managed zone properties for creation
+     *      ```php
+     *      [
+     *      'name' => (string) GCP Managed Zone name,
+     *      'dns_name' => (string) The DNS name of this managed zone with a trailing period (ex. "example.com."),
+     *      'visibility' => (string) The zone's visibility: public zones are exposed to the Internet while private zones are visible only to Virtual Private Cloud resources. ("public" or "private"),
+     *      'dnssec_config_state' => (string) DNSSEC configuration ("on" or "off"),
+     *      'description' => (string) A short description of the managed zone
+     *      ]
+     *      ```
      *
      * @param array $optional_request_data
      *      Optional extra properties for the managed zone creation
@@ -91,25 +89,6 @@ class ManagedZone extends BaseClient
     }
 
     /**
-     * Delete a managed zone from a Google Project
-     *
-     * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/delete
-     *
-     * @param string $managed_zone
-     *      The managed zone to delete
-     *
-     * @param array $request_data
-     *      Optional request data to pass into the DELETE request
-     *
-     * @return object|string
-     */
-    public function delete(string $managed_zone, array $request_data = []): object|string
-    {
-        return BaseClient::deleteRequest(self::BASE_URL . '/' . $this->project_id .
-            '/managedZones/' . $managed_zone, $request_data);
-    }
-
-    /**
      * Update a managed zone of a Google Project
      *
      * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/update
@@ -125,6 +104,25 @@ class ManagedZone extends BaseClient
     public function update(string $managed_zone, array $request_data): object|string
     {
         return BaseClient::patchRequest(self::BASE_URL . '/' . $this->project_id .
+            '/managedZones/' . $managed_zone, $request_data);
+    }
+
+    /**
+     * Delete a managed zone from a Google Project
+     *
+     * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/delete
+     *
+     * @param string $managed_zone
+     *      The name of the managed zone to delete
+     *
+     * @param array $request_data
+     *      Optional request data to pass into the DELETE request
+     *
+     * @return object|string
+     */
+    public function delete(string $managed_zone, array $request_data = []): object|string
+    {
+        return BaseClient::deleteRequest(self::BASE_URL . '/' . $this->project_id .
             '/managedZones/' . $managed_zone, $request_data);
     }
 }

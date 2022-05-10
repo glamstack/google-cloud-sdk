@@ -9,7 +9,8 @@ class ApiClientModel
     private OptionsResolver $resolver;
     private array $options;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->resolver = new OptionsResolver();
     }
 
@@ -69,7 +70,6 @@ class ApiClientModel
             ->allowedTypes('array')
             ->default(['single'])
             ->info('The channels to log to for the SDK');
-
     }
 
     /**

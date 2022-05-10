@@ -6,7 +6,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RecordSetModel
 {
-
     private array $options;
     private OptionsResolver $resolver;
 
@@ -20,7 +19,6 @@ class RecordSetModel
         $this->createOptions($this->resolver);
         $this->options = $this->resolver->resolve($options);
         return $this->options;
-
     }
 
     protected function createOptions(OptionsResolver $resolver)
@@ -55,13 +53,10 @@ class RecordSetModel
         $resolver->define('routing_policy')
             ->allowedTypes('array')
             ->info('The routing policy to assign');
-
-
     }
 
     public function verify(): array
     {
-
         return $this->options;
     }
 }

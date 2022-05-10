@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Google Cloud SDK is an open source [Composer](https://getcomposer.org/) package created by [GitLab IT Engineering](https://about.gitlab.com/handbook/business-technology/engineering/) for use in the [GitLab Access Manager](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager) Laravel application for connecting to [Google Cloud API endpoints](https://cloud.google.com/apis). 
+The Google Cloud SDK is an open source [Composer](https://getcomposer.org/) package created by [GitLab IT Engineering](https://about.gitlab.com/handbook/business-technology/engineering/) for use in the [GitLab Access Manager](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager) Laravel application for connecting to [Google Cloud API endpoints](https://cloud.google.com/apis).
 
 > **Disclaimer:** This is not an official package maintained by the Google or GitLab product and development teams. This is an internal tool that we use in the GitLab IT department that we have open sourced as part of our company values.
 >
@@ -27,7 +27,8 @@ The package utilizes the [glamstack/google-auth-sdk](https://gitlab.com/gitlab-c
 
 For more information on [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) please see the [Google Auth SDK README.md](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk/-/blob/main/README.md).
 
-This package has two different utilization's:
+You can choose which approach you'd like to use to perform API calls:
+
 1. [Using the Pre-Configured Resources](#using-pre-configured-endpoints):
     * DNS
        * ManagedZone Resource
@@ -35,7 +36,7 @@ This package has two different utilization's:
 2. [Using the REST Resource](#custom-non-configured-connections):
     * This contains the standard `GET`, `POST`, `PUT`, `PATCH`, and `DELETE` API calls
     * To use this resource you will be required to pass in the full endpoint `url` to the method
-    > **Note:** These methods are only tested to the point that we know they will run the proper HTTP Methods when utilized. There is no parameter validation
+    > **Note:** These methods are only tested to the point that we know they will run the proper HTTP Methods when utilized. There is no parameter validation.
 
 ## Installation
 
@@ -52,16 +53,10 @@ This package uses [Calendar Versioning](#calendar-versioning).
 We recommend always using a specific version in your `composer.json` file and reviewing the [changelog](changelog/) to see the breaking changes in each release before assuming that the latest release is the right choice for your project.
 
 ```bash
-composer require glamstack/google-cloud-sdk
+composer require glamstack/google-cloud-sdk:2.5.10
 ```
 
 > If you are contributing to this package, see [CONTRIBUTING](CONTRIBUTING.md) for instructions on configuring a local composer package with symlinks.
-
-### Related SDK Packages
-
-This SDK provides authentication to be able to use the generic [Laravel HTTP Client](https://laravel.com/docs/8.x/http-client) with any endpoint that can be found in the [Google API Explorer](https://developers.google.com/apis-explorer).
-
-We have created additional packages that provide defined methods for some of the common service endpoints that GitLab IT uses if you don't want to specify the endpoints yourself.
 
 ### Calendar Versioning
 
@@ -79,9 +74,11 @@ The version number represents the release date in `vY.M.D` format.
 
 ### Connection Keys
 
+TODO
 
+### Using Pre-Configured Endpoints
 
-### Using Pre-Configured Endpoints 
+TODO
 
 #### Available Endpoints
 
@@ -152,11 +149,11 @@ It is a recommended to store a copy of each JSON API key in your preferred passw
 
 ## Log Outputs
 
-### Valid 
+### Valid
 
 ### Invalid
 
-### Missing 
+### Missing
 
 ### Invalid or Mismatched
 
