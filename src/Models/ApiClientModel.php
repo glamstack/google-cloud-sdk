@@ -58,7 +58,7 @@ class ApiClientModel
             ->allowedTypes('string')
             ->info('The email account to run the API call as');
 
-        $resolver->define('file_path')
+        $resolver->define('json_key_file_path')
             ->allowedTypes('string')
             ->info('The storage location of the Google JSON key file');
 
