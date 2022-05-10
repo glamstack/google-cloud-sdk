@@ -238,6 +238,7 @@ It is a recommended to store a copy of each JSON API key in your preferred passw
 ### Valid
 
 ```bash
+[2022-05-10 15:44:58] testing.INFO: Glamstack\GoogleCloud\Resources\BaseClient::GETREQUEST 200 https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME {"api_endpoint":"https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME","api_method":"GLAMSTACK\\GOOGLECLOUD\\RESOURCES\\BASECLIENT::GETREQUEST","class":"Glamstack\\GoogleCloud\\Resources\\BaseClient","event_type":"google-cloud-api-response-info","message":"Glamstack\\GoogleCloud\\Resources\\BaseClient::GETREQUEST 200 https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME","status_code":200} 
 
 ```
 
