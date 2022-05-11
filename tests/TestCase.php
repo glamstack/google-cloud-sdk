@@ -12,7 +12,6 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
-//        ini_set('memory_limit', '48M');
         if(!is_dir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys')){
             mkdir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys');
         }
@@ -22,10 +21,6 @@ class TestCase extends Orchestra
         if (!is_link(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud/test.json')) {
             symlink(__DIR__ . '/../storage/keys/glamstack-google-cloud/test.json', __DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud/test.json');
         }
-        
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Glamstack\\GoogleCloud\\ApiClient\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
     }
 
     protected function getPackageProviders($app)
@@ -37,11 +32,5 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
-
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_apiclient_table.php.stub';
-        $migration->up();
-        */
     }
 }
