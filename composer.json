@@ -1,6 +1,6 @@
 {
     "name": "glamstack/google-cloud-sdk",
-    "description": "This is my package apiclient",
+    "description": "Google Cloud SDK for Laravel",
     "keywords": [
         "Glamstack",
         "laravel",
