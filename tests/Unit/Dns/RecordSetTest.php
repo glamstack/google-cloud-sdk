@@ -21,7 +21,7 @@ it('can list recordset with custom configuration', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
         'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
-        'project_id' => 'dwheeler-277df745'
+        'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID')
     ]);
     $response = $client->dns()->recordSet()->list('testing-zone');
     expect($response->status->code)->toBe(200);
@@ -33,9 +33,9 @@ it('can list recordset with custom configuration', function () {
 it('does not meet the record requirements', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
-        'subject_email' => 'dwheeler@gitlab.com',
+        'subject_email' => env('GOOGLE_CLOUD_TEST_SUBJECT_EMAIL'),
         'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
-        'project_id' => 'dwheeler-277df745'
+        'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID')
     ]);
     $client->dns()->recordSet()->create('testing-zone', [
         'testing' => 'this should not work'
@@ -48,9 +48,9 @@ it('does not meet the record requirements', function () {
 it('does not have the required type for rrdatas', function() {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
-        'subject_email' => 'dwheeler@gitlab.com',
+        'subject_email' => env('GOOGLE_CLOUD_TEST_SUBJECT_EMAIL'),
         'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
-        'project_id' => 'dwheeler-277df745'
+        'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID')
     ]);
     $client->dns()->recordSet()->create('testing-zone', [
         'name' => 'TestingSet',
