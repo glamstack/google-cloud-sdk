@@ -8,14 +8,16 @@ use Glamstack\GoogleCloud\Models\Dns\RecordSetModel;
 
 class RecordSet extends BaseClient
 {
-    const BASE_URL = 'https://dns.googleapis.com/dns/v1/projects';
-
     private RecordSetModel $recordSetModel;
+    private string $base_url;
 
-    public function __construct(ApiClient $api_client)
+    public function __construct(ApiClient $api_client, string $base_url)
     {
         parent::__construct($api_client);
         $this->recordSetModel = new RecordSetModel();
+
+        // Set the base_url class level variable
+        $this->base_url = $base_url;
     }
 
     /**
@@ -43,7 +45,7 @@ class RecordSet extends BaseClient
         string $record_type,
         array $request_data = []
     ): object|string {
-        return BaseClient::getRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
+        return BaseClient::getRequest($this->base_url . '/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets/' . $record_set . '/' . $record_type, $request_data);
     }
 
@@ -62,7 +64,7 @@ class RecordSet extends BaseClient
      */
     public function list(string $managed_zone, array $request_data = []): object|string
     {
-        return BaseClient::getRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
+        return BaseClient::getRequest($this->base_url . '/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets', $request_data);
     }
 
@@ -98,8 +100,9 @@ class RecordSet extends BaseClient
 
         $request_data = array_merge($request_data, $optional_request_data);
 
-        return BaseClient::postRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
-            $managed_zone . '/rrsets', $request_data);
+        return BaseClient::postRequest($this->base_url . '/' . 
+            $this->project_id . '/managedZones/' . $managed_zone . 
+            '/rrsets', $request_data);
     }
 
     /**
@@ -121,7 +124,7 @@ class RecordSet extends BaseClient
      */
     public function delete(string $managed_zone, string $name, string $type, array $request_data = []): object|string
     {
-        return BaseClient::deleteRequest(self::BASE_URL . '/' . $this->project_id . '/managedZones/' .
+        return BaseClient::deleteRequest($this->base_url . '/' . $this->project_id . '/managedZones/' .
             $managed_zone . '/rrsets/' . $name . '/' . $type, $request_data);
     }
 }
