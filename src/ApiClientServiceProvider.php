@@ -17,6 +17,5 @@ class ApiClientServiceProvider extends PackageServiceProvider
         $package
             ->name('google-cloud-sdk')
             ->hasConfigFile('glamstack-google-cloud');
-        // ->hasCommand(ApiClientCommand::class);
     }
 }
