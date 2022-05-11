@@ -8,14 +8,16 @@ use Glamstack\GoogleCloud\Models\Dns\ManagedZoneModel;
 
 class ManagedZone extends BaseClient
 {
-    const BASE_URL = 'https://dns.googleapis.com/dns/v1/projects';
+    
+    private string $base_url;
 
     private ManagedZoneModel $managedZoneModel;
 
-    public function __construct(ApiClient $api_client)
+    public function __construct(ApiClient $api_client, string $base_url)
     {
         parent::__construct($api_client);
         $this->managedZoneModel = new ManagedZoneModel();
+        $this->base_url = $base_url;
     }
 
     /**
@@ -34,7 +36,7 @@ class ManagedZone extends BaseClient
      */
     public function get(string $managed_zone, array $optional_request_data = []): object|string
     {
-        return BaseClient::getRequest(self::BASE_URL . '/' . $this->project_id .
+        return BaseClient::getRequest($this->base_url . '/' . $this->project_id .
             '/managedZones/' . $managed_zone, $optional_request_data);
     }
 
@@ -50,7 +52,7 @@ class ManagedZone extends BaseClient
      */
     public function list(array $optional_request_data = []): object|string
     {
-        return BaseClient::getRequest(self::BASE_URL . '/' . $this->project_id .
+        return BaseClient::getRequest($this->base_url . '/' . $this->project_id .
             '/managedZones', $optional_request_data);
     }
 
@@ -85,7 +87,7 @@ class ManagedZone extends BaseClient
         // Merge the required request data with the optional request data
         $request_data = array_merge($request_data, $optional_request_data);
 
-        return BaseClient::postRequest(self::BASE_URL . '/' . $this->project_id .
+        return BaseClient::postRequest($this->base_url . '/' . $this->project_id .
             '/managedZones', $request_data);
     }
 
@@ -104,7 +106,7 @@ class ManagedZone extends BaseClient
      */
     public function update(string $managed_zone, array $request_data): object|string
     {
-        return BaseClient::patchRequest(self::BASE_URL . '/' . $this->project_id .
+        return BaseClient::patchRequest($this->base_url . '/' . $this->project_id .
             '/managedZones/' . $managed_zone, $request_data);
     }
 
@@ -123,7 +125,7 @@ class ManagedZone extends BaseClient
      */
     public function delete(string $managed_zone, array $request_data = []): object|string
     {
-        return BaseClient::deleteRequest(self::BASE_URL . '/' . $this->project_id .
+        return BaseClient::deleteRequest($this->base_url . '/' . $this->project_id .
             '/managedZones/' . $managed_zone, $request_data);
     }
 }
