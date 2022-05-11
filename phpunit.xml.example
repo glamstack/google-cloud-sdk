@@ -28,5 +28,6 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
         <env name="GOOGLE_CLOUD_TEST_PROJECT_ID" value="gcp_project_id"/>
+        <env name="GOOGLE_CLOUD_TEST_SUBJECT_EMAIL" value="example@example.com"/>
     </php>
 </phpunit>
