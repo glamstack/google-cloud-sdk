@@ -6,6 +6,7 @@ use Glamstack\GoogleCloud\ApiClient;
 
 class Dns extends ApiClient
 {
+    const BASE_URL = "https://dns.googleapis.com/dns/v1/projects";
     /**
      * Creates a RecordSet object
      *
@@ -13,7 +14,7 @@ class Dns extends ApiClient
      */
     public function RecordSet(): RecordSet
     {
-        return new RecordSet($this);
+        return new RecordSet($this, self::BASE_URL);
     }
 
     /**
@@ -23,6 +24,6 @@ class Dns extends ApiClient
      */
     public function ManagedZone(): ManagedZone
     {
-        return new ManagedZone($this);
+        return new ManagedZone($this, self::BASE_URL);
     }
 }
