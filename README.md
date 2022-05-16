@@ -158,12 +158,6 @@ $client = new Glamstack\GoogleCloud\ApiClient(null, [
 
 The pre-configured endpoints in this SDK contain input validation as and are verified via testing with [Pest](https://pestphp.com/)
 
-#### Available Endpoints
-
-1. [Cloud DNS](https://cloud.google.com/dns/docs/reference/v1)
-   1. [ManagedZones](https://cloud.google.com/dns/docs/reference/v1/managedZones)
-   2. [RecordSets](https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets)
-
 #### Example Inline Usage
 
 ```php
@@ -179,7 +173,142 @@ Due to the time constraints this SDK also has the ability to create HTTP calls t
 
 ```php
 $client = new Glamstack\GoogleCloud\ApiClient('test');
-$response = $client->rest()->get('https://dns.googleapis.com/dns/v1/projects/' . env('GOOGLE_CLOUD_TEST_PROJECT_ID') . '/managedZones', []);
+$response = $client->rest()->get('https://dns.googleapis.com/dns/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/managedZones', []);
+```
+
+## Endpoints
+
+### Generic REST Calls
+
+The package is not intended to provide functions for every endpoint in the GitLab API.
+
+We have taken a simpler approach by providing a universal ApiClient that can perform GET, POST, PUT, and DELETE requests to any endpoint that you find in the GitLab API documentation and handles the API response, error handling, and pagination for you.
+
+This builds upon the simplicity of the Laravel HTTP Client that is powered by the Guzzle HTTP client to provide "last lines of code parsing" for Google API responses to improve the developer experience.
+
+We have additional classes and methods for the endpoints that GitLab Access Manager uses frequently that we will iterate upon over time.
+
+#### GET Request
+
+```php
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+```
+
+```php
+// Get list of IP addresses
+// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/list
+$response = $client->rest()->get('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses', []);
+```
+
+```php
+// Get specific IP address
+// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/get
+$response = $client->rest()->get('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses/{resourceId}', []);
+```
+
+#### POST Request
+
+```php
+
+// Create a new IP address
+// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/insert
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+
+$request_data = [
+    'name' => string,
+    'description' => string,
+    'networkTier' => enum,
+    'ipVersion' => enum,
+    'addressType' => enum,
+    'subnetwork' => string,
+    'network' => string
+];
+
+$response = $client->rest()->post('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses', $request_data);
+```
+
+#### DELETE Request
+
+```php
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+
+$response = $client->rest()->delete('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses/{resourceId}');
+```
+
+### Cloud DNS - Managed Zones
+
+See the [API documentation](https://cloud.google.com/dns/docs/reference/v1/managedZones) to learn more.
+
+#### Get a List of Zones
+
+```php
+$response = $client->dns()->managedZone()->list();
+```
+
+#### Get a specific zone
+
+```php
+$response = $client->dns()->managedZone()->get('testing-zone');
+```
+
+#### Create a Zone
+
+```php
+$response = $client->dns()->managedZone()->create([
+    'name' => 'testing-zone-3',
+    'dns_name' => 'testing-zone-3.example.com.',
+    'visibility' => 'private',
+    'dnssec_config_state' => 'off',
+    'description' => 'Testing zone 3 by SDK',
+]);
+```
+
+#### Delete a Zone
+
+```php
+$response = $client->dns()->managedZone()->delete('testing-zone-3');
+```
+
+### Cloud DNS - Record Sets
+
+See the [API documentation](https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets) to learn more.
+
+#### Get a List of Records
+
+```php
+$response = $client->dns()->recordSet()->list('testing-zone');
+```
+
+#### Get a specific record
+
+```php
+$response = $client->dns()->recordSet()->get(
+    'testing-zone',
+    'testingmail.testingzone.example.com.',
+    'CNAME'
+);
+```
+
+#### Create a Record
+
+```php
+$response = $client->dns()->recordSet()->create('testing-zone', [
+    'name' => 'testingmail.testingzone.example.com.',
+    'type' => 'CNAME',
+    'ttl' => 300,
+    'rrdatas' => ['mail.testingzone.example.com.']
+    ]
+);
+```
+
+#### Delete a Record
+
+```php
+$response = $client->dns()->RecordSet()->delete(
+    'testing-zone',
+    'testingmail.testingzone.example.com.', 
+    'CNAME'
+);
 ```
 
 ## Logging Configuration
