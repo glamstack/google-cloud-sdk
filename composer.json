@@ -46,7 +46,7 @@
     "autoload": {
         "psr-4": {
             "Glamstack\\GoogleCloud\\": "src",
-            "Glamstack\\GoogleCloud\\Database\\Factories\\": "database/factories",
+            "Glamstack\\GoogleCloud\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
