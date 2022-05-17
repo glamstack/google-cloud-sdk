@@ -8,7 +8,6 @@ use Glamstack\GoogleCloud\Models\Dns\ManagedZoneModel;
 
 class ManagedZone extends BaseClient
 {
-    
     private string $base_url;
 
     private ManagedZoneModel $managedZoneModel;
@@ -63,7 +62,7 @@ class ManagedZone extends BaseClient
      *
      * @param array $request_data
      *      Required managed zone properties for creation
-     * 
+     *
      *      ```php
      *      [
      *          'name' => (string) GCP Managed Zone name,

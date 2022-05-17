@@ -6,7 +6,7 @@ use Glamstack\GoogleCloud\ApiClient;
 
 class Dns extends ApiClient
 {
-    const BASE_URL = "https://dns.googleapis.com/dns/v1/projects";
+    public const BASE_URL = "https://dns.googleapis.com/dns/v1/projects";
     /**
      * Creates a RecordSet object
      *

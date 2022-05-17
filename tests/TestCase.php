@@ -12,10 +12,10 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
-        if(!is_dir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys')){
+        if (!is_dir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys')) {
             mkdir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys');
         }
-        if (!is_dir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud')){
+        if (!is_dir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud')) {
             mkdir(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud');
         }
         if (!is_link(__DIR__.'/../vendor/orchestra/testbench-core/laravel/storage/keys/glamstack-google-cloud/test.json')) {

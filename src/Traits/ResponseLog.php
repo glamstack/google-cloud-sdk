@@ -20,9 +20,8 @@ trait ResponseLog
      *
      * @return void
      */
-    public function logResponse(string $url, object $response) : void
+    public function logResponse(string $url, object $response): void
     {
-
         $method = debug_backtrace()[1]['class'] . '::' . Str::upper(debug_backtrace()[1]['function']);
 
         // Status code log messages (2xx, 4xx, 5xx)
@@ -49,7 +48,7 @@ trait ResponseLog
      *
      * @return void
      */
-    public function logInfo(string $method, string $url, object $response) : void
+    public function logInfo(string $method, string $url, object $response): void
     {
         $message = $method . ' '.$response->status->code.' '.$url;
 
@@ -78,7 +77,7 @@ trait ResponseLog
      *
      * @return void
      */
-    public function logClientError(string $method, string $url, object $response) : void
+    public function logClientError(string $method, string $url, object $response): void
     {
         $message = $method.' '.$response->status->code.' '.$url;
 
@@ -109,7 +108,7 @@ trait ResponseLog
      *
      * @return void
      */
-    public function logServerError(string $method, string $url, object $response) : void
+    public function logServerError(string $method, string $url, object $response): void
     {
         $message = $method . ' ' . $response->status->code . ' ' . $url;
 

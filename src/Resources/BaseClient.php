@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\Http;
 
 abstract class BaseClient
 {
-
     use ResponseLog;
 
-    const CONFIG_PATH = 'glamstack-google-cloud.';
+    public const CONFIG_PATH = 'glamstack-google-cloud.';
 
     private string $auth_token;
     protected string $project_id;
@@ -23,10 +22,9 @@ abstract class BaseClient
     /**
      * @throws \Exception
      */
-    function __construct(
+    public function __construct(
         ApiClient $api_client
-    )
-    {
+    ) {
         // Initialize Google Auth SDK
         $this->api_client = $api_client;
 
@@ -36,7 +34,7 @@ abstract class BaseClient
         // Set the log_channels class variable
         $this->setLogChannels();
 
-        if($this->api_client->connection_key){
+        if ($this->api_client->connection_key) {
             $google_auth = new \Glamstack\GoogleAuth\AuthClient(
                 $this->parseConfigFile($this->api_client->connection_key)
             );
@@ -47,7 +45,7 @@ abstract class BaseClient
         }
 
         // Authenticate with Google OAuth2 Server auth_token
-        try{
+        try {
             $this->auth_token = $google_auth->authenticate();
         } catch (Exception $exception) {
             $this->logLocalError($exception);
@@ -62,7 +60,7 @@ abstract class BaseClient
      */
     protected function setLogChannels(): void
     {
-        if($this->api_client->connection_key){
+        if ($this->api_client->connection_key) {
             $this->log_channels = config(
                 self::CONFIG_PATH . 'connections.' .
                 $this->api_client->connection_key . '.log_channels'
@@ -116,7 +114,7 @@ abstract class BaseClient
     protected function getConfigSubjectEmail(string $connection_key): string|null
     {
         $config_path = self::CONFIG_PATH . 'connections.' . $connection_key;
-        if(array_key_exists('subject_email', config($config_path))){
+        if (array_key_exists('subject_email', config($config_path))) {
             return config($config_path . '.subject_email');
         } else {
             return null;
@@ -182,7 +180,7 @@ abstract class BaseClient
      */
     protected function getConfigArraySubjectEmail(array $connection_config): string|null
     {
-        if(array_key_exists('subject_email', $connection_config)){
+        if (array_key_exists('subject_email', $connection_config)) {
             return $connection_config['subject_email'];
         } else {
             return null;
@@ -201,7 +199,7 @@ abstract class BaseClient
      */
     protected function getConfigArrayFilePath(array $connection_config): string|null
     {
-        if(array_key_exists('json_key_file_path', $connection_config)){
+        if (array_key_exists('json_key_file_path', $connection_config)) {
             return $connection_config['json_key_file_path'];
         } else {
             return null;
@@ -220,7 +218,7 @@ abstract class BaseClient
      */
     protected function getConfigArrayJsonKey(array $connection_config): mixed
     {
-        if(array_key_exists('json_key', $connection_config)){
+        if (array_key_exists('json_key', $connection_config)) {
             return $connection_config['json_key'];
         } else {
             return null;
@@ -234,7 +232,7 @@ abstract class BaseClient
      */
     protected function setProjectId(): void
     {
-        if($this->api_client->connection_key){
+        if ($this->api_client->connection_key) {
             $this->project_id = config(
                 self::CONFIG_PATH . 'connections.' .
                 $this->api_client->connection_key . '.project_id'
@@ -263,7 +261,7 @@ abstract class BaseClient
         // Check if the data is paginated
         $isPaginated = $this->checkForPagination($response);
 
-        if($isPaginated) {
+        if ($isPaginated) {
 
             // Get the paginated results
             $paginated_results = $this->getPaginatedResults($uri, $request_data, $response);
@@ -413,7 +411,7 @@ abstract class BaseClient
     protected function checkForPagination(Response $response): bool
     {
         // Check if Google Cloud GET Request object contains `nextPageToken`
-        if(property_exists($response->object(), 'nextPageToken')) {
+        if (property_exists($response->object(), 'nextPageToken')) {
             return true;
         } else {
             return false;
@@ -438,8 +436,7 @@ abstract class BaseClient
         string $uri,
         array $request_data,
         Response $response
-    ): array
-    {
+    ): array {
         // Initialize $records as an empty array. This is where we will store
         // the returned data from each paginated request.
         $records = [];
@@ -470,7 +467,7 @@ abstract class BaseClient
 
         // If there are more pages to GET, set the `$next_page_token` variable
         // to the `$next_response` `nextPageToken` element of the object
-        if($next_page_exists) {
+        if ($next_page_exists) {
             $next_page_token = $this->getNextPageToken($next_response);
         } else {
             $next_page_token = null;
@@ -481,7 +478,7 @@ abstract class BaseClient
         // If there is an additional (ex. third) page then continue through all
         // data until the API response does not contain the `nextPageToken`
         // element in the returned object
-        if($next_page_token) {
+        if ($next_page_token) {
             $next_response = $this->getNextPageResults(
                 $uri,
                 $request_data,
@@ -504,7 +501,7 @@ abstract class BaseClient
 
             // If there is another page set the `next_page_token` variable
             // to the `nextPageToken` from the response.
-            if($next_page_exists) {
+            if ($next_page_exists) {
                 $this->getNextPageToken($next_response);
             }
         }
@@ -545,8 +542,7 @@ abstract class BaseClient
         string $uri,
         array $request_data,
         Response $response
-    ): Response
-    {
+    ): Response {
 
         // Set the Google Cloud Query parameter `pageToken` to the
         // responses `nextPageToken` element
@@ -585,7 +581,7 @@ abstract class BaseClient
         unset($response_object->etag);
 
         // If the response contains the `nextPageToken` element unset that
-        if($contains_next_page) {
+        if ($contains_next_page) {
             unset($response_object->nextPageToken);
         }
 
@@ -661,7 +657,7 @@ abstract class BaseClient
     {
         $headers = [];
 
-        foreach($header_response as $header_key => $header_value) {
+        foreach ($header_response as $header_key => $header_value) {
             // if($header_key != '')
             $headers[$header_key] = implode(" ", $header_value);
         }
@@ -679,11 +675,10 @@ abstract class BaseClient
      */
     protected function convertPaginatedResponseToObject(
         array $paginatedResponse
-    ): object
-    {
+    ): object {
         $results = [];
 
-        foreach($paginatedResponse as $response_key => $response_value) {
+        foreach ($paginatedResponse as $response_key => $response_value) {
             $results[$response_key] = $response_value;
         }
         return (object) $results;
