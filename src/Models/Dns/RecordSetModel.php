@@ -2,61 +2,81 @@
 
 namespace Glamstack\GoogleCloud\Models\Dns;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Illuminate\Support\Facades\Validator;
 
 class RecordSetModel
 {
-    private array $options;
-    private OptionsResolver $resolver;
+    public function get(array $options = []){
+        $validator = Validator::make($options,
+            [
+                'managed_zone' => 'required|string',
+                'project_id' => 'required|string',
+                'name' => 'required|string',
+                'type' => 'required|string|in:CNAME,A,AAAA',
+            ],
+            [
+                'type.in' => 'Available types are CNAME,A,AAAA'
+            ]
+        );
 
-    public function __construct()
-    {
-        $this->resolver = new OptionsResolver();
+        if ($validator->fails()) {
+            dd($validator->messages()->first());
+        }
+
+        $path_parameters = (object) [
+            'managed_zone' => $options['managed_zone'],
+            'project_id' => $options['project_id'],
+            'name' => $options['name'],
+            'type' => $options['type']
+        ];
+
+        $request_data = $options;
+        unset($request_data['managed_zone'], $request_data['project_id'], $request_data['name'], $request_data['type']);
+
+
+        $return_value = (object) [
+            'path_parameter' => $path_parameters,
+            'request_data' => $request_data
+        ];
+
+        return $return_value;
     }
 
-    public function verifyCreate(array $options = []): array
+    public function create(array $options = [])
     {
-        $this->createOptions($this->resolver);
-        $this->options = $this->resolver->resolve($options);
-        return $this->options;
-    }
+        $default_ttl = 300;
 
-    protected function createOptions(OptionsResolver $resolver)
-    {
-        $resolver->define('name')
-            ->required()
-            ->allowedTypes('string')
-            ->info('The name of the RecordSet');
+        $options['ttl'] = $options['ttl'] ?? $default_ttl;
 
-        $resolver->define('ttl')
-            ->required()
-            ->default(300)
-            ->allowedTypes('int')
-            ->info('The TTL for the RecordSet');
+        $validator = Validator::make($options, [
+            'managed_zone' => 'required|string',
+            'project_id' => 'required|string',
+            'name' => 'required|string',
+            'ttl' => 'required|integer',
+            'type' => 'required|string|in:CNAME,A,AAAA',
+            'rrdatas' => 'required|array'
+        ],[
+            'type.in' => 'Available types are CNAME,A,AAAA'
+        ]);
 
-        $resolver->define('type')
-            ->required()
-            ->allowedTypes('string')
-            ->allowedValues('CNAME', 'A', 'AAAA')
-            ->info('The DNS record type');
+        if ($validator->fails()) {
+            dd($validator->messages()->first());
+        }
 
-        $resolver->define('rrdatas')
-            ->required()
-            ->allowedTypes('array')
-            ->info('The rrdatas for the resource');
+        $path_parameters = (object) [
+            'managed_zone' => $options['managed_zone'],
+            'project_id' => $options['project_id']
+        ];
 
-        // Optional configurations
-        $resolver->define('signature_rrdatas')
-            ->allowedTypes('array')
-            ->info('The signature rrdatas for the resource');
+        $request_data = $options;
+        unset($request_data['managed_zone']);
+        unset($request_data['project_id']);
 
-        $resolver->define('routing_policy')
-            ->allowedTypes('array')
-            ->info('The routing policy to assign');
-    }
+        $return_value = (object) [
+            'path_parameters' => $path_parameters,
+            'request_data' => $request_data
+        ];
 
-    public function verify(): array
-    {
-        return $this->options;
+        return $return_value;
     }
 }
