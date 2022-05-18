@@ -74,51 +74,50 @@ The version number represents the release date in `vY.M.D` format.
 
 ## Usage Instructions
 
-Initialization of this package can be done either by passing in a (string) [connection_key](#connection-keys) or by passing in a (array) [connection_config](#connection-config-array)
+Initialization of the API Client can be done either by passing in a (string) [connection_key](#connection-keys) or by passing in an (array) [connection_config](#dynamic-connection-config-array)
 
 ### Connection Keys
 
-To utilize the `connection_key` initialization of the SDK the `glamstack-google-cloud.php` configuration file must be updated with the connection you want to utilize (See [Example Connection Key Configuration](#example-connection-key-configuration-initialization)).
+We use the concept of **_connection keys_** that refer to a configuration array in `config/glamstack-google-cloud.php` that allows you to pre-configure one or more API connections.
 
-After completing the `glamstack-google-cloud.php` configuration file you can utilize the connection key from the file by passing in the `connection key` name (See [Example Connection Key Initialization](#example-connection-key-initialization))
-
-This will allow for configuring of multiple different connections to be utilized by the SDK.
+Each connection key is associated with a GCP service account JSON key. This can be used to configure different auth scope connections and permissions to your GCP organization or different GCP project(s) depending on the API calls that you're using. This allows for least privilege for specific API calls, and you can also configure multiple connections with the same GCP project and different API tokens that have different permission levels.
 
 #### Example Connection Key Initialization
 
 ```php
-// Initialize the SDK to use `gcp_project_1` configuration from `glamstack-google-cloud.php`
-$client = new Glamstack\GoogleCloud\ApiClient('gcp_project_1');
+// Initialize the SDK using the `test` configuration from `glamstack-google-cloud.php`
+$client = new Glamstack\GoogleCloud\ApiClient('test');
 ```
 
-#### Example Connection Key Configuration Initialization
+#### Example Connection Key Configuration
 
 ```php
-return [    
+return [
     'connections' => [
-        'gcp_project_1' => [
-            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+        'test' => [
+            'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID'),
             'api_scopes' => [
                 'https://www.googleapis.com/auth/ndev.clouddns.readwrite'
             ],
-            'json_key_file' => storage_path('keys/glamstack-google-cloud/gcp_project_1.json'),
+            'json_key_file' => storage_path('keys/glamstack-google-cloud/test.json'),
             'log_channels' => ['single']
         ]
     ]
 ]
 ```
 
-### Connection Config Array
+### Dynamic Connection Config Array
 
-To utilize the `connection_config` array of the SDK you are not required to have an updated configuration in the `glamstack-google-cloud.php` configuration file. Instead, you have the ability to pass in the required configurations via an array (See [Example Connection Config Array Initialization](#example-connection-config-array-initialization)).
+If you don't want to pre-configure your connection and prefer to dynamically use connection variables that are stored in your database, you have the ability to pass in the required configurations via an array (See [Example Connection Config Array Initialization](#example-connection-config-array-initialization)) using the `connection_config` array in the second argument of the `ApiClient` construct method.
 
 #### Required Parameters
 
-1. `api_scopes` (Array)
-    * Array of the API Scopes needed for the APIs to be used
-2. `project_id` (String)
-    * The Google Project ID to run the API call on
-3. `json_key_file_path` (String) **OR** `json_key` (String)
+| Key | Type | Description |
+|-----|------|-------------|
+| `api_scopes` | array | Array of the API Scopes needed for the APIs to be used |
+| `project_id` | string | The Google Project ID to run the API call on |
+| `json_key_file_path` | string | Option 1 - Provide a file path to the `.json` key file |
+| `json_key` | string | Option 2 - Provide the JSON key contents stored in your database |
 
 #### Example Connection Config Array Initialization
 
@@ -127,12 +126,13 @@ To utilize the `connection_config` array of the SDK you are not required to have
 ```php
 $client = new Glamstack\GoogleCloud\ApiClient(null, [
     'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
-    'json_key_file_path' => 'storage/keys/glamstack-google-cloud/gcp_project_1.json',
+    'json_key_file_path' => storage('keys/glamstack-google-cloud/gcp_project_1.json'),
     'project_id' => 'example_project_id_123'
 ]);
 ```
 
 ##### Using The `json_key` Parameter
+
 ```php
 $json_string = '{
     "type": "service_account",
@@ -158,12 +158,6 @@ $client = new Glamstack\GoogleCloud\ApiClient(null, [
 
 The pre-configured endpoints in this SDK contain input validation as and are verified via testing with [Pest](https://pestphp.com/)
 
-#### Available Endpoints
-
-1. [Cloud DNS](https://cloud.google.com/dns/docs/reference/v1)
-   1. [ManagedZones](https://cloud.google.com/dns/docs/reference/v1/managedZones)
-   2. [RecordSets](https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets)
-
 #### Example Inline Usage
 
 ```php
@@ -179,7 +173,142 @@ Due to the time constraints this SDK also has the ability to create HTTP calls t
 
 ```php
 $client = new Glamstack\GoogleCloud\ApiClient('test');
-$response = $client->rest()->get('https://dns.googleapis.com/dns/v1/projects/' . env('GOOGLE_CLOUD_TEST_PROJECT_ID') . '/managedZones', []);
+$response = $client->rest()->get('https://dns.googleapis.com/dns/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/managedZones', []);
+```
+
+## Endpoints
+
+### Generic REST Calls
+
+The package is not intended to provide functions for every endpoint in the Google Cloud API.
+
+We have taken a simpler approach by providing a universal ApiClient that can perform GET, POST, PUT, and DELETE requests to any endpoint that you find in the GitLab API documentation and handles the API response, error handling, and pagination for you.
+
+This builds upon the simplicity of the Laravel HTTP Client that is powered by the Guzzle HTTP client to provide "last lines of code parsing" for Google API responses to improve the developer experience.
+
+We have additional classes and methods for the endpoints that GitLab Access Manager uses frequently that we will iterate upon over time.
+
+#### GET Request
+
+```php
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+```
+
+```php
+// Get list of IP addresses
+// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/list
+$response = $client->rest()->get('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses', []);
+```
+
+```php
+// Get specific IP address
+// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/get
+$response = $client->rest()->get('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses/{resourceId}', []);
+```
+
+#### POST Request
+
+```php
+
+// Create a new IP address
+// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/insert
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+
+$request_data = [
+    'name' => string,
+    'description' => string,
+    'networkTier' => enum,
+    'ipVersion' => enum,
+    'addressType' => enum,
+    'subnetwork' => string,
+    'network' => string
+];
+
+$response = $client->rest()->post('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses', $request_data);
+```
+
+#### DELETE Request
+
+```php
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+
+$response = $client->rest()->delete('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses/{resourceId}');
+```
+
+### Cloud DNS - Managed Zones
+
+See the [API documentation](https://cloud.google.com/dns/docs/reference/v1/managedZones) to learn more.
+
+#### Get a List of Zones
+
+```php
+$response = $client->dns()->managedZone()->list();
+```
+
+#### Get a specific zone
+
+```php
+$response = $client->dns()->managedZone()->get('testing-zone');
+```
+
+#### Create a Zone
+
+```php
+$response = $client->dns()->managedZone()->create([
+    'name' => 'testing-zone-3',
+    'dns_name' => 'testing-zone-3.example.com.',
+    'visibility' => 'private',
+    'dnssec_config_state' => 'off',
+    'description' => 'Testing zone 3 by SDK',
+]);
+```
+
+#### Delete a Zone
+
+```php
+$response = $client->dns()->managedZone()->delete('testing-zone-3');
+```
+
+### Cloud DNS - Record Sets
+
+See the [API documentation](https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets) to learn more.
+
+#### Get a List of Records
+
+```php
+$response = $client->dns()->recordSet()->list('testing-zone');
+```
+
+#### Get a specific record
+
+```php
+$response = $client->dns()->recordSet()->get(
+    'testing-zone',
+    'testingmail.testingzone.example.com.',
+    'CNAME'
+);
+```
+
+#### Create a Record
+
+```php
+$response = $client->dns()->recordSet()->create('testing-zone', [
+    'name' => 'testingmail.testingzone.example.com.',
+    'type' => 'CNAME',
+    'ttl' => 300,
+    'rrdatas' => ['mail.testingzone.example.com.']
+    ]
+);
+```
+
+#### Delete a Record
+
+```php
+$response = $client->dns()->RecordSet()->delete(
+    'testing-zone',
+    'testingmail.testingzone.example.com.',
+    'CNAME'
+);
 ```
 
 ## Logging Configuration
@@ -232,20 +361,19 @@ Do not store your JSON key file anywhere that is not included in the `.gitignore
 
 It is a recommended to store a copy of each JSON API key in your preferred password manager (ex. 1Password, LastPass, etc.) and/or secrets vault (ex. HashiCorp Vault, Ansible, etc.).
 
-
 ## Log Outputs
 
 ### Valid
 
 ```bash
-[2022-05-10 15:44:58] testing.INFO: Glamstack\GoogleCloud\Resources\BaseClient::GETREQUEST 200 https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME {"api_endpoint":"https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME","api_method":"GLAMSTACK\\GOOGLECLOUD\\RESOURCES\\BASECLIENT::GETREQUEST","class":"Glamstack\\GoogleCloud\\Resources\\BaseClient","event_type":"google-cloud-api-response-info","message":"Glamstack\\GoogleCloud\\Resources\\BaseClient::GETREQUEST 200 https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME","status_code":200} 
+[2022-05-10 15:44:58] testing.INFO: Glamstack\GoogleCloud\Resources\BaseClient::GETREQUEST 200 https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME {"api_endpoint":"https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME","api_method":"GLAMSTACK\\GOOGLECLOUD\\RESOURCES\\BASECLIENT::GETREQUEST","class":"Glamstack\\GoogleCloud\\Resources\\BaseClient","event_type":"google-cloud-api-response-info","message":"Glamstack\\GoogleCloud\\Resources\\BaseClient::GETREQUEST 200 https://dns.googleapis.com/dns/v1/projects/example-project/managedZones/testing-zone/rrsets/testingexample.testingzone.example.com./CNAME","status_code":200}
 
 ```
 
 ### Authentication Failure
 
 ```bash
-[2022-05-09 16:45:07] testing.INFO: Google OAuth2 Authentication Failed {"calling_method":"__CONSTRUCT","class":"Glamstack\\GoogleCloud\\Resources\\BaseClient","event_type":"google-auth-api-response-info","message":"Google OAuth2 Authentication Failed"} 
+[2022-05-09 16:45:07] testing.INFO: Google OAuth2 Authentication Failed {"calling_method":"__CONSTRUCT","class":"Glamstack\\GoogleCloud\\Resources\\BaseClient","event_type":"google-auth-api-response-info","message":"Google OAuth2 Authentication Failed"}
 
 ```
 
@@ -272,7 +400,7 @@ or
 To run the test with a coverage report run the following:
 
 ```bash
-composer test-coverage 
+composer test-coverage
 ```
 
 ## Issue Tracking and Bug Reports

@@ -45,7 +45,7 @@ it('does not meet the record requirements', function () {
 /**
  * Test error is thrown when rrdatas has incorrect value type
  */
-it('does not have the required type for rrdatas', function() {
+it('does not have the required type for rrdatas', function () {
     $client = new Glamstack\GoogleCloud\ApiClient(null, [
         'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
         'subject_email' => env('GOOGLE_CLOUD_TEST_SUBJECT_EMAIL'),
@@ -63,9 +63,11 @@ it('does not have the required type for rrdatas', function() {
 /**
  * Test the creation of a record set
  */
-it('can create a recordSet', function() {
+it('can create a recordSet', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $client->dns()->recordSet()->create('testing-zone', [
+    $response = $client->dns()->recordSet()->create(
+        'testing-zone',
+        [
         'name' => 'testingmail.testingzone.example.com.',
         'type' => 'CNAME',
         'ttl' => 300,
@@ -78,7 +80,7 @@ it('can create a recordSet', function() {
 /**
  * Test getting a specific record set
  */
-it('can get a specific record set', function(){
+it('can get a specific record set', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
     $response = $client->dns()->recordSet()->get(
         'testing-zone',
@@ -91,9 +93,12 @@ it('can get a specific record set', function(){
 /**
  * Test the deletion of a record set
  */
-it('can delete a recordSet', function() {
+it('can delete a recordSet', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $client->dns()->RecordSet()->delete('testing-zone',
-    'testingmail.testingzone.example.com.', 'CNAME');
+    $response = $client->dns()->RecordSet()->delete(
+        'testing-zone',
+        'testingmail.testingzone.example.com.',
+        'CNAME'
+    );
     expect($response->status->successful)->toBeTrue();
 });

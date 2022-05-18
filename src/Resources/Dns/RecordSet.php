@@ -100,8 +100,8 @@ class RecordSet extends BaseClient
 
         $request_data = array_merge($request_data, $optional_request_data);
 
-        return BaseClient::postRequest($this->base_url . '/' . 
-            $this->project_id . '/managedZones/' . $managed_zone . 
+        return BaseClient::postRequest($this->base_url . '/' .
+            $this->project_id . '/managedZones/' . $managed_zone .
             '/rrsets', $request_data);
     }
 

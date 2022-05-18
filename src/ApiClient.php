@@ -46,12 +46,11 @@ class ApiClient
     public function __construct(
         ?string $connection_key = null,
         ?array $connection_config = []
-    )
-    {
+    ) {
         $api_client_model = new ApiClientModel();
 
         // Set the connection key used for getting the correct configuration
-        if(empty($connection_config)){
+        if (empty($connection_config)) {
             $this->setConnectionKey($connection_key);
             $this->connection_config = [];
         } else {
@@ -79,18 +78,18 @@ class ApiClient
      * If no connection_key is provided, the `GOOGLE_AUTH_DEFAULT_CONNECTION`
      * variable in `.env` is used. If the `.env` variable is not set, the value
      * is defined in `config/glamstack-google-cloud.php` and is set to `test` if
-     * not defined. This can be overridden when initializing the SDK with a 
-     * different connection key which is passed into this function to set the 
+     * not defined. This can be overridden when initializing the SDK with a
+     * different connection key which is passed into this function to set the
      * class variable to the provided key.
      *
-     * @param ?string $connection_key (Optional) 
+     * @param ?string $connection_key (Optional)
      *      The connection key to use from the configuration file.
      *
      * @return void
      */
     protected function setConnectionKey(?string $connection_key): void
     {
-        if($connection_key == null) {
+        if ($connection_key == null) {
             $this->connection_key = config(
                 $this->config_path.'default.connection'
             );
@@ -126,7 +125,8 @@ class ApiClient
             ->first();
 
         /** @phpstan-ignore-next-line */
-        $package = $composer_package['name'].'/'.$composer_package['version'];
+        $package = 'google-cloud-sdk'.'/dev';
+        //$package = $composer_package['name'].'/'.$composer_package['version'];
 
         // Define request headers
         $this->request_headers = [
