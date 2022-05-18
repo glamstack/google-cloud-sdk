@@ -110,24 +110,25 @@ class ApiClient
         $php = 'php/'.phpversion();
 
         // Decode the composer.lock file
-        $composer_lock_json = json_decode(
-            (string) file_get_contents(base_path('composer.lock')),
-            true
-        );
+//        $composer_lock_json = json_decode(
+//            (string) file_get_contents(base_path('composer.lock')),
+//            true
+//        );
 
         // Use Laravel collection to search for the package. We will use the
         // array to get the package name (in case it changes with a fork) and
         // return the version key. For production, this will show a release
         // number. In development, this will show the branch name.
         /** @phpstan-ignore-next-line */
-        $composer_package = collect($composer_lock_json['packages'])
-            ->where('name', 'glamstack/google-cloud-sdk')
-            ->first();
+//        $composer_package = collect($composer_lock_json['packages'])
+//            ->where('name', 'glamstack/google-cloud-sdk')
+//            ->first();
 
         /** @phpstan-ignore-next-line */
         $package = 'google-cloud-sdk'.'/dev';
         //$package = $composer_package['name'].'/'.$composer_package['version'];
 
+        $package = 'testing';
         // Define request headers
         $this->request_headers = [
             'User-Agent' => $package.' '.$laravel.' '.$php

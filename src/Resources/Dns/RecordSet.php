@@ -40,13 +40,15 @@ class RecordSet extends BaseClient
      * @return object|string
      */
     public function get(
-        string $managed_zone,
-        string $record_set,
-        string $record_type,
         array $request_data = []
     ): object|string {
-        return BaseClient::getRequest($this->base_url . '/' . $this->project_id . '/managedZones/' .
-            $managed_zone . '/rrsets/' . $record_set . '/' . $record_type, $request_data);
+
+        $request_data['project_id'] = $request_data['project_id'] ?? $this->project_id;
+
+        $request_data = $this->recordSetModel->get($request_data);
+
+        return BaseClient::getRequest($this->base_url . '/' . $request_data->path_parameter->project_id . '/managedZones/' .
+            $request_data->path_parameter->managed_zone . '/rrsets/' . $request_data->path_parameter->name . '/' . $request_data->path_parameter->type, $request_data->request_data);
     }
 
     /**
@@ -75,34 +77,31 @@ class RecordSet extends BaseClient
      * @see https://cloud.google.com/dns/docs/records-overview#supported_dns_record_types
      * @see https://datatracker.ietf.org/doc/html/rfc1035
      *
-     * @param string $managed_zone
-     *      The name of the managed zone to create the record set in
-     *
      * @param array $request_data
      *      Required record set properties for creation
      *      ```php
      *      [
-     *          'name' => (string) The name of the record set (ex. 'testingmail.testingzone.example.com.'),
-     *          'type' => (string) The type of record set (see records-overview#supported_dns_record_types reference),
-     *          'ttl' => (int) The TTL of the record set (ex. 300)
-     *          'rrdatas' => (array) As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1) (ex. ['mail.testingzone.example.com.'])
+     *          'managed_zone' => Required | (string)
+     *          'name' => Required | (string) The name of the record set (ex. 'testingmail.testingzone.example.com.'),
+     *          'type' => Required | (string) The type of record set (see records-overview#supported_dns_record_types reference),
+     *          'rrdatas' => Required | (array) As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1) (ex. ['mail.testingzone.example.com.'])
+     *          'project_id' Optional | (string) The GCP project id of the record set (Default: GCP project id the SDK was initialized with)
+     *          'ttl' => Optional | (int) The TTL of the record set (ex. 300)
      *      ]
      *      ```
      *
-     * @param array $optional_request_data
-     *      Optional record set properties to set
-     *
      * @return object|string
      */
-    public function create(string $managed_zone, array $request_data = [], array $optional_request_data = []): object|string
+    public function create(array $request_data): object|string
     {
-        $this->recordSetModel->verifyCreate($request_data);
+        $request_data['project_id'] = $request_data['project_id'] ?? $this->project_id;
 
-        $request_data = array_merge($request_data, $optional_request_data);
+        $request_data = $this->recordSetModel->create($request_data);
 
         return BaseClient::postRequest($this->base_url . '/' .
-            $this->project_id . '/managedZones/' . $managed_zone .
-            '/rrsets', $request_data);
+            $request_data->path_parameters->project_id . '/managedZones/' .
+            $request_data->path_parameters->managed_zone . '/rrsets',
+            $request_data->request_data);
     }
 
     /**

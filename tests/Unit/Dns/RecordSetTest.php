@@ -52,7 +52,7 @@ it('does not have the required type for rrdatas', function () {
         'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID')
     ]);
-    $client->dns()->recordSet()->create('testing-zone', [
+    $client->dns()->recordSet()->create([
         'name' => 'TestingSet',
         'ttl' => 300,
         'type' => 'CNAME',
@@ -65,15 +65,13 @@ it('does not have the required type for rrdatas', function () {
  */
 it('can create a recordSet', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $client->dns()->recordSet()->create(
-        'testing-zone',
-        [
+    $response = $client->dns()->recordSet()->create([
+        'managed_zone' => 'testing-zone',
         'name' => 'testingmail.testingzone.example.com.',
         'type' => 'CNAME',
         'ttl' => 300,
         'rrdatas' => ['mail.testingzone.example.com.']
-        ]
-    );
+    ]);
     expect($response->status->code)->toBe(200);
 });
 
@@ -82,11 +80,11 @@ it('can create a recordSet', function () {
  */
 it('can get a specific record set', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $client->dns()->recordSet()->get(
-        'testing-zone',
-        'testingmail.testingzone.example.com.',
-        'CNAME'
-    );
+    $response = $client->dns()->recordSet()->get([
+        'managed_zone' => 'testing-zone',
+        'name' => 'testingmail.testingzone.example.com.',
+        'type' => 'CNAME'
+    ]);
     expect($response->object->name)->toBe('testingmail.testingzone.example.com.');
 });
 
