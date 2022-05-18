@@ -25,19 +25,12 @@ class RecordSet extends BaseClient
      *
      * @see https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets/get
      *
-     * @param string $managed_zone
-     *      Identifies the managed zone addressed by this request. Can be the managed zone name or ID
-     *
-     * @param string $record_set
-     *      Fully qualified domain name of the record set (ex 'testingmail.testingzone.example.com.')
-     *
-     * @param string $record_type
-     *      RRSet type (ex. 'CNAME')
-     *
      * @param array $request_data
      *      Optional request parameters to pass into request body
      *
      * @return object|string
+     *
+     * @throws \Exception
      */
     public function get(
         array $request_data = []
@@ -56,18 +49,21 @@ class RecordSet extends BaseClient
      *
      * @see https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets/list
      *
-     * @param string $managed_zone
-     *      The managed zone to list the record sets of
-     *
      * @param array $request_data
      *      Optional request data to pass into the list request
      *
      * @return object|string
+     *
+     * @throws \Exception
      */
-    public function list(string $managed_zone, array $request_data = []): object|string
+    public function list(array $request_data = []): object|string
     {
-        return BaseClient::getRequest($this->base_url . '/' . $this->project_id . '/managedZones/' .
-            $managed_zone . '/rrsets', $request_data);
+        $request_data['project_id'] = $request_data['project_id'] ?? $this->project_id;
+
+        $request_data = $this->recordSetModel->list($request_data);
+
+        return BaseClient::getRequest($this->base_url . '/' . $request_data->path_parameters->project_id . '/managedZones/' .
+            $request_data->path_parameters->managed_zone . '/rrsets', $request_data->request_data);
     }
 
     /**
@@ -91,6 +87,8 @@ class RecordSet extends BaseClient
      *      ```
      *
      * @return object|string
+     *
+     * @throws \Exception
      */
     public function create(array $request_data): object|string
     {
@@ -107,23 +105,21 @@ class RecordSet extends BaseClient
     /**
      * Delete a record set from a managed zone
      *
-     * @param string $managed_zone
-     *      The name of the managed zone to delete the record set from
-     *
-     * @param string $name
-     *      The record set name to be deleted
-     *
-     * @param string $type
-     *      The type of record to be deleted (ex. "CNAME")
-     *
      * @param array $request_data
      *      Optional request data to pass into the DELETE request
      *
      * @return object|string
+     * 
+     * @throws \Exception
      */
-    public function delete(string $managed_zone, string $name, string $type, array $request_data = []): object|string
+    public function delete(array $request_data = []): object|string
     {
-        return BaseClient::deleteRequest($this->base_url . '/' . $this->project_id . '/managedZones/' .
-            $managed_zone . '/rrsets/' . $name . '/' . $type, $request_data);
+        $request_data['project_id'] = $request_data['project_id'] ?? $this->project_id;
+
+        $request_data = $this->recordSetModel->delete($request_data);
+
+        return BaseClient::deleteRequest($this->base_url . '/' . $request_data->path_parameter->project_id . '/managedZones/' .
+            $request_data->path_parameter->managed_zone . '/rrsets/' . $request_data->path_parameter->name . '/' .
+            $request_data->path_parameter->type, $request_data->request_data);
     }
 }
