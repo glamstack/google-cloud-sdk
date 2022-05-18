@@ -9,7 +9,9 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
  */
 it('can list recordset', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $client->dns()->recordSet()->list('testing-zone');
+    $response = $client->dns()->recordSet()->list([
+        'managed_zone' => 'testing-zone'
+    ]);
     expect($response->status->code)->toBe(200);
 });
 
@@ -23,7 +25,9 @@ it('can list recordset with custom configuration', function () {
         'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID')
     ]);
-    $response = $client->dns()->recordSet()->list('testing-zone');
+    $response = $client->dns()->recordSet()->list([
+        'managed_zone' => 'testing-zone'
+    ]);
     expect($response->status->code)->toBe(200);
 });
 
@@ -37,10 +41,10 @@ it('does not meet the record requirements', function () {
         'json_key_file_path' => 'storage/keys/glamstack-google-cloud/test.json',
         'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID')
     ]);
-    $client->dns()->recordSet()->create('testing-zone', [
+    $client->dns()->recordSet()->create([
         'testing' => 'this should not work'
     ]);
-})->throws(UndefinedOptionsException::class);
+})->throws(Exception::class)->expectExceptionMessage('The managed zone field is required.');
 
 /**
  * Test error is thrown when rrdatas has incorrect value type
@@ -53,12 +57,13 @@ it('does not have the required type for rrdatas', function () {
         'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID')
     ]);
     $client->dns()->recordSet()->create([
+        'managed_zone' => 'testing-zone',
         'name' => 'TestingSet',
         'ttl' => 300,
         'type' => 'CNAME',
         'rrdatas' => 'mail.testingzone.example.com.'
     ]);
-})->throws(InvalidOptionsException::class);
+})->throws(Exception::class)->expectExceptionMessage('The rrdatas must be an array.');
 
 /**
  * Test the creation of a record set
@@ -93,10 +98,10 @@ it('can get a specific record set', function () {
  */
 it('can delete a recordSet', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $client->dns()->RecordSet()->delete(
-        'testing-zone',
-        'testingmail.testingzone.example.com.',
-        'CNAME'
-    );
+    $response = $client->dns()->RecordSet()->delete([
+            'managed_zone' => 'testing-zone',
+            'name' => 'testingmail.testingzone.example.com.',
+            'type' => 'CNAME'
+    ]);
     expect($response->status->successful)->toBeTrue();
 });
