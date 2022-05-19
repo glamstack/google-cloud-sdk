@@ -40,8 +40,12 @@ class RecordSet extends BaseClient
 
         $request_data = $this->recordSetModel->get($request_data);
 
-        return BaseClient::getRequest($this->base_url . '/' . $request_data->path_parameter->project_id . '/managedZones/' .
-            $request_data->path_parameter->managed_zone . '/rrsets/' . $request_data->path_parameter->name . '/' . $request_data->path_parameter->type, $request_data->request_data);
+        return BaseClient::getRequest($this->base_url . '/' .
+            $request_data->path_parameters->project_id . '/managedZones/' .
+            $request_data->path_parameters->managed_zone . '/rrsets/' .
+            $request_data->path_parameters->name . '/' .
+            $request_data->path_parameters->type, $request_data->request_data
+        );
     }
 
     /**
