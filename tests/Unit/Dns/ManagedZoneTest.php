@@ -5,7 +5,9 @@
  */
 it('can get a specific managed zone', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $client->dns()->managedZone()->get('testing-zone');
+    $response = $client->dns()->managedZone()->get([
+        'managed_zone' => 'testing-zone'
+    ]);
     expect($response->status->code)->toBe(200);
 });
 
@@ -42,6 +44,8 @@ it('can create a new zone', function () {
  */
 it('can delete a zone', function () {
     $client = new Glamstack\GoogleCloud\ApiClient('test');
-    $response = $client->dns()->managedZone()->delete('testing-zone-3');
+    $response = $client->dns()->managedZone()->delete([
+        'managed_zone' => 'testing-zone-3'
+    ]);
     expect($response->status->successful)->toBeTrue();
 });
