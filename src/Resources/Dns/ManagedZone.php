@@ -86,21 +86,19 @@ class ManagedZone extends BaseClient
      *      ]
      *      ```
      *
-     * @param array $optional_request_data
-     *      Optional extra properties for the managed zone creation
-     *
      * @return object|string
      */
-    public function create(array $request_data, array $optional_request_data = []): object|string
+    public function create(array $request_data): object|string
     {
+        $request_data['project_id'] = $request_data['project_id'] ?? $this->project_id;
+
         // Verify all required parameters are passed in
-        $this->managedZoneModel->verifyCreate($request_data);
+        $request_data = $this->managedZoneModel->create($request_data);
 
-        // Merge the required request data with the optional request data
-        $request_data = array_merge($request_data, $optional_request_data);
-
-        return BaseClient::postRequest($this->base_url . '/' . $this->project_id .
-            '/managedZones', $request_data);
+        return BaseClient::postRequest($this->base_url . '/' .
+            $request_data->path_parameters->project_id . '/managedZones',
+            $request_data->request_data
+        );
     }
 
     /**
