@@ -106,18 +106,23 @@ class ManagedZone extends BaseClient
      *
      * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/update
      *
-     * @param string $managed_zone
-     *      The managed zone to update
-     *
      * @param array $request_data
      *      The managed zone properties to update
      *
      * @return object|string
+     * @throws \Exception
      */
-    public function update(string $managed_zone, array $request_data): object|string
+    public function update(array $request_data): object|string
     {
-        return BaseClient::patchRequest($this->base_url . '/' . $this->project_id .
-            '/managedZones/' . $managed_zone, $request_data);
+        $request_data['project_id'] = $request_data['project_id'] ?? $this->project_id;
+
+        $request_data = $this->managedZoneModel->update($request_data);
+
+        return BaseClient::patchRequest($this->base_url . '/' .
+            $request_data->path_parameters->project_id . '/managedZones/' .
+            $request_data->path_parameters->project_id,
+            $request_data->request_data
+        );
     }
 
     /**
