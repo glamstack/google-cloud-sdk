@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Validator;
 
 class RecordSetModel
 {
-    public function get(array $options){
+    public function get(array $options): object
+    {
         $validator = Validator::make($options,
             [
                 'managed_zone' => 'required|string',
@@ -23,32 +24,19 @@ class RecordSetModel
         if ($validator->fails()) {
             throw new Exception($validator->messages()->first());
         }
+        $path_parameters = ['managed_zone', 'project_id', 'name', 'type'];
 
-        $path_parameters = (object) [
-            'managed_zone' => $options['managed_zone'],
-            'project_id' => $options['project_id'],
-            'name' => $options['name'],
-            'type' => $options['type']
-        ];
-
-        $request_data = $options;
-        unset($request_data['managed_zone'], $request_data['project_id'], $request_data['name'], $request_data['type']);
-
-
-        $return_value = (object) [
-            'path_parameter' => $path_parameters,
-            'request_data' => $request_data
-        ];
-
-        return $return_value;
+        return $this->createReturnValue($path_parameters, $options);
     }
 
     /**
      * @throws Exception
      */
-    public function create(array $options)
+    public function create(array $options): object
     {
         $default_ttl = 300;
+
+        $path_parameters = ['managed_zone', 'project_id'];
 
         $options['ttl'] = $options['ttl'] ?? $default_ttl;
 
@@ -67,27 +55,13 @@ class RecordSetModel
             throw new Exception($validator->messages()->first());
         }
 
-        $path_parameters = (object) [
-            'managed_zone' => $options['managed_zone'],
-            'project_id' => $options['project_id']
-        ];
-
-        $request_data = $options;
-        unset($request_data['managed_zone']);
-        unset($request_data['project_id']);
-
-        $return_value = (object) [
-            'path_parameters' => $path_parameters,
-            'request_data' => $request_data
-        ];
-
-        return $return_value;
+        return $this->createReturnValue($path_parameters, $options);
     }
 
     /**
      * @throws Exception
      */
-    public function list($options)
+    public function list($options): object
     {
         $validator = Validator::make($options,
             [
@@ -100,21 +74,13 @@ class RecordSetModel
             throw new Exception($validator->messages()->first());
         }
 
-        $path_parameters = (object) [
-            'managed_zone' => $options['managed_zone'],
-            'project_id' => $options['project_id']
-        ];
+        $path_parameters = ['managed_zone', 'project_id'];
 
-        $request_data = $options;
-        unset($request_data['managed_zone'], $request_data['project_id']);
-
-        return (object) [
-            'path_parameters' => $path_parameters,
-            'request_data' => $request_data
-        ];
+        return $this->createReturnValue($path_parameters, $options);
     }
 
-    public function delete(array $options){
+    public function delete(array $options): object
+    {
         $validator = Validator::make($options,
             [
                 'managed_zone' => 'required|string',
@@ -131,22 +97,26 @@ class RecordSetModel
             throw new Exception($validator->messages()->first());
         }
 
-        $path_parameters = (object) [
-            'managed_zone' => $options['managed_zone'],
-            'project_id' => $options['project_id'],
-            'name' => $options['name'],
-            'type' => $options['type']
+        $path_parameters = ['managed_zone', 'project_id', 'name', 'type'];
+
+        return $this->createReturnValue($path_parameters, $options);
+    }
+
+    protected function createReturnValue(array $path_parameters, $request_data): object
+    {
+        $final_path_parameters = (object) [];
+        foreach($path_parameters as $parameter){
+            $final_path_parameters->$parameter = $request_data[$parameter];
+        }
+
+        $final_request_data = $request_data;
+        foreach($path_parameters as $parameter){
+            unset($final_request_data[$parameter]);
+        }
+
+        return (object)[
+            'path_parameters' =>  $final_path_parameters,
+            'request_data' => $final_request_data
         ];
-
-        $request_data = $options;
-        unset($request_data['managed_zone'], $request_data['project_id'], $request_data['name'], $request_data['type']);
-
-
-        $return_value = (object) [
-            'path_parameter' => $path_parameters,
-            'request_data' => $request_data
-        ];
-
-        return $return_value;
     }
 }
