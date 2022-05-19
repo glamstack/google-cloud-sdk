@@ -2,95 +2,127 @@
 
 namespace Glamstack\GoogleCloud\Models\Dns;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class ManagedZoneModel
 {
-    private array $options;
-    private OptionsResolver $resolver;
-
-    public function __construct()
+    public function get(array $options): object
     {
-        $this->resolver = new OptionsResolver();
+        $validator = Validator::make($options,
+            [
+                'managed_zone' => 'required|string',
+                'project_id' => 'required|string'
+            ]
+        );
+
+        if ($validator->fails()) {
+            throw new Exception($validator->messages()->first());
+        }
+        $path_parameters = ['managed_zone', 'project_id'];
+
+        return $this->createReturnValue($path_parameters, $options);
     }
 
     /**
-     * Verify required resource for creation of a managed zone
-     *
-     * @param array $options
-     *      The request_data array for managed zone creation
-     *
-     * @return array
+     * @throws Exception
      */
-    public function verifyCreate(array $options = []): array
+    public function list($options): object
     {
-        $this->createOptions($this->resolver);
-        $this->options = $this->resolver->resolve($options);
-        $this->updateOptionsArray();
-        return $this->options;
+        $validator = Validator::make($options,
+            [
+                'project_id' => 'required|string',
+            ],
+        );
+
+        if ($validator->fails()) {
+            throw new Exception($validator->messages()->first());
+        }
+
+        $path_parameters = ['project_id'];
+
+        return $this->createReturnValue($path_parameters, $options);
     }
 
     /**
-     * Verify all required options are set
-     *
-     * Utilizes `OptionsResolver` for validation
-     *
-     * @see https://symfony.com/doc/current/components/options_resolver.html
-     *
-     * @param OptionsResolver $resolver
-     *      The request_data array passed in for creating a managed zone
-     *
-     * @return void
+     * @throws Exception
      */
-    protected function createOptions(OptionsResolver $resolver): void
+    public function create(array $options): object
     {
-        $resolver->define('name')
-            ->required()
-            ->allowedTypes('string')
-            ->info('The name of the Managed Zone');
+        $path_parameters = ['project_id'];
 
-        $resolver->define('dns_name')
-            ->required()
-            ->allowedTypes('string')
-            ->info('The DNS name of the managed zone');
+        $validator = Validator::make($options, [
+            'project_id' => 'required|string',
+            'name' => 'required|string',
+            'dns_name' => 'required|string',
+            'visibility' => 'required|string|in:public,private',
+            'dnssec_config_state' => 'required|string|in:on,off',
+            'description' => 'required|string'
+        ],[
+            'visibility.in' => 'Available visibilities are public and private',
+            'dnssec_config_state.in' => 'Available visibilities are public and private'
+        ]);
 
-        $resolver->define('visibility')
-            ->required()
-            ->allowedTypes('string')
-            ->allowedValues('public', 'private')
-            ->info('Whether the DNS zone is public or private');
+        if ($validator->fails()) {
+            throw new Exception($validator->messages()->first());
+        }
 
-        $resolver->define('dnssec_config_state')
-            ->required()
-            ->allowedTypes('string')
-            ->allowedValues('on', 'off')
-            ->info('The option to configure DNSSEC for the zone');
-
-        $resolver->define('description')
-            ->required()
-            ->allowedTypes('string')
-            ->info('The description of the DNS Zone');
-
-        $resolver->define('cloud_logging_enabled')
-            ->default(true)
-            ->allowedTypes('bool')
-            ->info('The option to configure logging for the zone. Defaults to true');
+        return $this->createReturnValue($path_parameters, $options);
     }
 
-    /**
-     * Updates array properties into Google dot notation
-     *
-     * This method will update the `dnssec_config_state` to `dnssecConfig.state`
-     * and `cloud_logging_enabled` to `cloudLoggingConfig.enableLogging`
-     *
-     * @return void
-     */
-    protected function updateOptionsArray(): void
-    {
-        $this->options['dnssecConfig.state'] = $this->options['dnssec_config_state'];
-        unset($this->options['dnssec_config_state']);
 
-        $this->options['cloudLoggingConfig.enableLogging'] = $this->options['cloud_logging_enabled'];
-        unset($this->options['cloud_logging_enabled']);
+
+    public function delete(array $options): object
+    {
+        $validator = Validator::make($options,
+            [
+                'managed_zone' => 'required|string',
+                'project_id' => 'required|string',
+            ],
+        );
+
+        if ($validator->fails()) {
+            throw new Exception($validator->messages()->first());
+        }
+
+        $path_parameters = ['managed_zone', 'project_id'];
+
+        return $this->createReturnValue($path_parameters, $options);
+    }
+
+    public function update(array $options): object
+    {
+        $validator = Validator::make($options,
+            [
+                'managed_zone' => 'required|string',
+                'project_id' => 'required|string',
+            ]
+        );
+
+        if ($validator->fails()) {
+            throw new Exception($validator->messages()->first());
+        }
+
+        $path_parameters = ['managed_zone', 'project_id'];
+
+        return $this->createReturnValue($path_parameters, $options);
+    }
+
+    protected function createReturnValue(array $path_parameters, $request_data): object
+    {
+        $final_path_parameters = (object) [];
+        foreach($path_parameters as $parameter){
+            $final_path_parameters->$parameter = $request_data[$parameter];
+        }
+
+        $final_request_data = $request_data;
+        foreach($path_parameters as $parameter){
+            unset($final_request_data[$parameter]);
+        }
+
+        return (object)[
+            'path_parameters' =>  $final_path_parameters,
+            'request_data' => $final_request_data
+        ];
     }
 }
