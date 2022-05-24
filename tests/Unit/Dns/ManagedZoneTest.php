@@ -31,8 +31,8 @@ it('can create a new zone', function () {
         [
             'name' => 'testing-zone-3',
             'dns_name' => 'testing-zone-3.example.com.',
-            'visibility' => 'private',
-            'dnssec_config_state' => 'off',
+            'visibility' => 'public',
+            'logging_enabled' => true,
             'description' => 'Testing zone 3 by SDK',
         ]
     );
