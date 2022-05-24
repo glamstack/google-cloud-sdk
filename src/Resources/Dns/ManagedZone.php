@@ -81,12 +81,13 @@ class ManagedZone extends BaseClient
      *          'name' => (string) GCP Managed Zone name,
      *          'dns_name' => (string) The DNS name of this managed zone with a trailing period (ex. "example.com."),
      *          'visibility' => (string) The zone's visibility: public zones are exposed to the Internet while private zones are visible only to Virtual Private Cloud resources. ("public" or "private"),
-     *          'dnssec_config_state' => (string) DNSSEC configuration ("on" or "off"),
+     *          'logging_enabled' => (bool) Enable or Disable Logging
      *          'description' => (string) A short description of the managed zone
      *      ]
      *      ```
      *
      * @return object|string
+     * @throws \Exception
      */
     public function create(array $request_data): object|string
     {
@@ -94,7 +95,6 @@ class ManagedZone extends BaseClient
 
         // Verify all required parameters are passed in
         $request_data = $this->managedZoneModel->create($request_data);
-
         return BaseClient::postRequest($this->base_url . '/' .
             $request_data->path_parameters->project_id . '/managedZones',
             $request_data->request_data
