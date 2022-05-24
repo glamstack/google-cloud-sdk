@@ -19,6 +19,7 @@ class ManagedZoneModel
         if ($validator->fails()) {
             throw new Exception($validator->messages()->first());
         }
+
         $path_parameters = ['managed_zone', 'project_id'];
 
         return $this->createReturnValue($path_parameters, $options);
@@ -56,16 +57,17 @@ class ManagedZoneModel
             'name' => 'required|string',
             'dns_name' => 'required|string',
             'visibility' => 'required|string|in:public,private',
-            'dnssec_config_state' => 'required|string|in:on,off',
+            'logging_enabled' => 'nullable|boolean',
             'description' => 'required|string'
         ],[
             'visibility.in' => 'Available visibilities are public and private',
-            'dnssec_config_state.in' => 'Available visibilities are public and private'
         ]);
 
         if ($validator->fails()) {
             throw new Exception($validator->messages()->first());
         }
+
+        $options = $this->renameLoggingEnabled($options);
 
         return $this->createReturnValue($path_parameters, $options);
     }
@@ -124,5 +126,14 @@ class ManagedZoneModel
             'path_parameters' =>  $final_path_parameters,
             'request_data' => $final_request_data
         ];
+    }
+
+    protected function renameLoggingEnabled(array $request_data){
+        $request_data['cloudLoggingConfig'] = [
+            'enableLogging' => $request_data['logging_enabled']
+        ];
+        unset($request_data['logging_enabled']);
+
+        return $request_data;
     }
 }
