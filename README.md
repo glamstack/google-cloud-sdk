@@ -69,6 +69,22 @@ composer require glamstack/google-cloud-sdk:2.5.25
 
 > If you are contributing to this package, see [CONTRIBUTING](CONTRIBUTING.md) for instructions on configuring a local composer package with symlinks.
 
+### Publish the configuration file
+
+```bash
+php artisan vendor:publish --tag=glamstack-google-cloud
+```
+
+### Version upgrades
+
+If you have upgraded to a newer version of the package, you should back up your existing configuration file to avoid your custom configuration being overridden.
+
+```bash
+cp config/glamstack-google-cloud.php config/glamstack-google-cloud.php.bak
+
+php artisan vendor:publish --tag=glamstack-google-cloud
+```
+
 ### Calendar Versioning
 
 The GitLab IT Engineering team uses a modified version of [Calendar Versioning (CalVer)](https://calver.org/) instead of [Semantic Versioning (SemVer)](https://semver.org/). CalVer has a YY (Ex. 2021 => 21) but having a version `21.xx` feels unintuitive to us. Since our team started this in 2021, we decided to use the last integer of the year only (2021 => 1.x, 2022 => 2.x, etc).
@@ -83,9 +99,15 @@ The version number represents the release date in `vY.M.D` format.
 1. We update each of our project `composer.json` files that use this package to specific or new version numbers during scheduled change windows without worrying about differences and/or breaking changes with "staying up to date with the latest version". We don't maintain any forks or divergent branches.
 1. Our packages use underlying packages in your existing Laravel application, so keeping your Laravel application version up-to-date addresses most security concerns.
 
-## Usage Instructions
+## Initializing the SDK
 
 Initialization of the API Client can be done either by passing in a (string) [connection_key](#connection-keys) or by passing in an (array) [connection_config](#dynamic-connection-config-array)
+
+### Google API Authentication
+
+The package utilizes the [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) package for creating the [Google JWT Web Token](https://cloud.google.com/iot/docs/how-tos/credentials/jwts) to authenticate with [Google Cloud API endpoints](https://cloud.google.com/apis).
+
+For more information on [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) please see the [Google Auth SDK README.md](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk/-/blob/main/README.md).
 
 ### Connection Keys
 
@@ -130,9 +152,7 @@ If you don't want to pre-configure your connection and prefer to dynamically use
 | `json_key_file_path` | string | Option 1 - Provide a file path to the `.json` key file |
 | `json_key`           | string | Option 2 - Provide the JSON key contents stored in your database |
 
-#### Example Connection Config Array Initialization
-
-##### Using A Stored Google JSON Auth Key
+#### Using a JSON Key File on your filesystem
 
 ```php
 $client = new Glamstack\GoogleCloud\ApiClient(null, [
@@ -142,34 +162,46 @@ $client = new Glamstack\GoogleCloud\ApiClient(null, [
 ]);
 ```
 
-##### Using The `json_key` Parameter
+#### Using a JSON Key String in your database
+
+**Security Warning:** You should never commit your service account key (JSON contents) into your source code as a variable to avoid compromising your credentials for your GCP organization or projects.
+
+It is recommended to convert the JSON key to a base 64 encoded string before encryption since this is the format used by the GCP Service Account API for the `privateKeyData` field.
 
 ```php
-$json_string = '{
-    "type": "service_account",
-    "project_id": "project_id",
-    "private_key_id": "key_id",
-    "private_key": "key_data",
-    "client_email": "xxxxx@xxxxx.iam.gserviceaccount.com",
-    "client_id": "123455667897654",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "some stuff"
-}';
+// Get service account from your model (`GoogleServiceAccount` is an example)
+$service_account = \App\Models\GoogleServiceAccount::where('id', '123456')->firstOrFail();
 
-$client = new Glamstack\GoogleCloud\ApiClient(null, [
+// Get JSON key string from database column that has an encrypted value
+$json_key_string = decrypt(json_decode($service_account->json_key));
+
+$client = new \Glamstack\GoogleCloud\ApiClient(null, [
     'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
-    'subject_email' => 'example@example.com',
-    'json_key' => $json_string
+    'json_key' => $json_key_string,
+    'project_id' => 'example-project-123'
 ]);
 ```
 
-### Google API Authentication
+The example below shows the value of the JSON key that is stored in your database.
 
-The package utilizes the [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) package for creating the [Google JWT Web Token](https://cloud.google.com/iot/docs/how-tos/credentials/jwts) to authenticate with [Google Cloud API endpoints](https://cloud.google.com/apis).
+```php
+// Get service account from your model (`GoogleServiceAccount` is an example)
+$service_account = \App\Models\GoogleServiceAccount::where('id', '123456')->firstOrFail();
 
-For more information on [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) please see the [Google Auth SDK README.md](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk/-/blob/main/README.md).
+dd(decrypt(json_decode($service_account->json_key));
+// {
+//     "type": "service_account",
+//     "project_id": "project_id",
+//     "private_key_id": "key_id",
+//     "private_key": "key_data",
+//     "client_email": "xxxxx@xxxxx.iam.gserviceaccount.com",
+//     "client_id": "123455667897654",
+//     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+//     "token_uri": "https://oauth2.googleapis.com/token",
+//     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+//     "client_x509_cert_url": "some stuff"
+// }
+```
 
 ## Endpoints
 
