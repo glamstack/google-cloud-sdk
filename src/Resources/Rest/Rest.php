@@ -139,7 +139,7 @@ class Rest extends ApiClient
      *
      * @throws Exception
      */
-    public function post(string $uri, array $request_data = []): object|string
+    public function post(string $uri, ?array $request_data = []): object|string
     {
         $method = new Method($this);
         return $method->post($uri, $request_data);
