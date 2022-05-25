@@ -300,7 +300,7 @@ abstract class BaseClient
      *
      * @return object|string
      */
-    public function postRequest(string $uri, array $request_data = []): object|string
+    public function postRequest(string $uri, ?array $request_data = []): object|string
     {
         // Append to Google Domain and Google Customer ID to the request data
         $request = Http::withToken($this->auth_token)
