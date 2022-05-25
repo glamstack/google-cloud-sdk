@@ -24,3 +24,9 @@ it('can use delete request to delete a managed zone', function () {
     $response = $client->rest()->delete('https://dns.googleapis.com/dns/v1/projects/' . env('GOOGLE_CLOUD_TEST_PROJECT_ID') . '/managedZones/testing-zone-3');
     expect($response->status->successful)->toBeTrue();
 });
+
+it('can use post to enable google services', function(){
+   $client = new Glamstack\GoogleCloud\ApiClient('test');
+   $response = $client->rest()->post('https://serviceusage.googleapis.com/v1/projects/' . env('GOOGLE_CLOUD_TEST_PROJECT_ID') .'/services/pubsub.googleapis.com:enable', null);
+   expect($response->status->successful)->toBeTrue();
+});
