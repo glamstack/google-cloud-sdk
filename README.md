@@ -23,20 +23,31 @@ The Google Cloud SDK is an open source [Composer](https://getcomposer.org/) pack
 
 ### How It Works
 
-The package utilizes the [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) package for creating the [Google JWT Web Token](https://cloud.google.com/iot/docs/how-tos/credentials/jwts) to authenticate with [Google Cloud API endpoints](https://cloud.google.com/apis).
+The package is not intended to provide functions for every endpoint in the Google Cloud API.
 
-For more information on [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) please see the [Google Auth SDK README.md](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk/-/blob/main/README.md).
+We have taken a simpler approach by providing a universal ApiClient that can perform `GET`, `POST`, `PUT`, `PATCH,` and `DELETE` requests to any endpoint that you find in the Google API documentation and handles the API response, error handling, and pagination for you.
 
-You can choose which approach you'd like to use to perform API calls:
+This builds upon the simplicity of the Laravel HTTP Client that is powered by the Guzzle HTTP client to provide "last lines of code parsing" for Google API responses to improve the developer experience.
 
-1. [Using the Pre-Configured Resources](#using-pre-configured-endpoints):
-    * DNS
-       * ManagedZone Resource
-       * RecordSet Resource
-2. [Using the REST Resource](#custom-non-configured-connections):
-    * This contains the standard `GET`, `POST`, `PUT`, `PATCH`, and `DELETE` API calls
-    * To use this resource you will be required to pass in the full endpoint `url` to the method
-    > **Note:** These methods are only tested to the point that we know they will run the proper HTTP Methods when utilized. There is no parameter validation.
+We have additional classes and methods for the endpoints that GitLab Access Manager uses frequently that we will iterate upon over time.
+
+* [Generic REST Calls](#generic-rest-calls)
+    * [GET Request](#get-request)
+    * [POST Request](#post-request)
+    * [PUT Request](#put-request)
+    * [PATCH Request](#patch-request)
+    * [DELETE Request](#delete-request)
+* [Cloud DNS Endpoints](#cloud-dns-endpoints)
+    * [Managed Zones](#cloud-dns---managed-zones)
+        * [Get a list of Zones](#get-a-list-of-zones)
+        * [Get a specific Zone](#get-a-specific-zone)
+        * [Create a Zone](#create-a-zone)
+        * [Delete a Zone](#delete-a-zone)
+    * [Recordsets](#cloud-dns---record-sets)
+        * [Get a list of Records](#get-a-list-of-records)
+        * [Get a specific Record](#get-a-specific-record)
+        * [Create a Record](#create-a-record)
+        * [Delete a Record](#delete-a-record)
 
 ## Installation
 
@@ -53,7 +64,7 @@ This package uses [Calendar Versioning](#calendar-versioning).
 We recommend always using a specific version in your `composer.json` file and reviewing the [changelog](changelog/) to see the breaking changes in each release before assuming that the latest release is the right choice for your project.
 
 ```bash
-composer require glamstack/google-cloud-sdk:2.5.10
+composer require glamstack/google-cloud-sdk:2.5.25
 ```
 
 > If you are contributing to this package, see [CONTRIBUTING](CONTRIBUTING.md) for instructions on configuring a local composer package with symlinks.
@@ -112,12 +123,12 @@ If you don't want to pre-configure your connection and prefer to dynamically use
 
 #### Required Parameters
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `api_scopes` | array | Array of the API Scopes needed for the APIs to be used |
-| `project_id` | string | The Google Project ID to run the API call on |
+| Key                  | Type   | Description |
+|----------------------|--------|-------------|
+| `api_scopes`         | array  | Array of the API Scopes needed for the APIs to be used |
+| `project_id`         | string | The Google Project ID to run the API call on |
 | `json_key_file_path` | string | Option 1 - Provide a file path to the `.json` key file |
-| `json_key` | string | Option 2 - Provide the JSON key contents stored in your database |
+| `json_key`           | string | Option 2 - Provide the JSON key contents stored in your database |
 
 #### Example Connection Config Array Initialization
 
@@ -127,7 +138,7 @@ If you don't want to pre-configure your connection and prefer to dynamically use
 $client = new Glamstack\GoogleCloud\ApiClient(null, [
     'api_scopes' => ['https://www.googleapis.com/auth/ndev.clouddns.readwrite'],
     'json_key_file_path' => storage('keys/glamstack-google-cloud/gcp_project_1.json'),
-    'project_id' => 'example_project_id_123'
+    'project_id' => 'example-project-123'
 ]);
 ```
 
@@ -154,84 +165,88 @@ $client = new Glamstack\GoogleCloud\ApiClient(null, [
 ]);
 ```
 
-### Using Pre-Configured Endpoints
+### Google API Authentication
 
-The pre-configured endpoints in this SDK contain input validation as and are verified via testing with [Pest](https://pestphp.com/)
+The package utilizes the [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) package for creating the [Google JWT Web Token](https://cloud.google.com/iot/docs/how-tos/credentials/jwts) to authenticate with [Google Cloud API endpoints](https://cloud.google.com/apis).
 
-#### Example Inline Usage
-
-```php
-$client = new Glamstack\GoogleCloud\ApiClient('test');
-$response = $client->dns()->managedZone()->get('testing-zone');
-```
-
-### Custom Non-Configured Connections
-
-Due to the time constraints this SDK also has the ability to create HTTP calls to any Google Cloud API endpoint utilizing the Rest resource. The Rest resource will allow you to input any Google Cloud API endpoint as the uri and it will run the method you called on that endpoint.
-
-#### Example Inline Usage
-
-```php
-$client = new Glamstack\GoogleCloud\ApiClient('test');
-$response = $client->rest()->get('https://dns.googleapis.com/dns/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/managedZones', []);
-```
+For more information on [glamstack/google-auth-sdk](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk) please see the [Google Auth SDK README.md](https://gitlab.com/gitlab-com/business-technology/engineering/access-manager/packages/composer/google-auth-sdk/-/blob/main/README.md).
 
 ## Endpoints
 
 ### Generic REST Calls
 
-The package is not intended to provide functions for every endpoint in the Google Cloud API.
+You need to initialize the API client and set the project ID for every endpoint that you use.
 
-We have taken a simpler approach by providing a universal ApiClient that can perform GET, POST, PUT, and DELETE requests to any endpoint that you find in the GitLab API documentation and handles the API response, error handling, and pagination for you.
-
-This builds upon the simplicity of the Laravel HTTP Client that is powered by the Guzzle HTTP client to provide "last lines of code parsing" for Google API responses to improve the developer experience.
-
-We have additional classes and methods for the endpoints that GitLab Access Manager uses frequently that we will iterate upon over time.
-
-#### GET Request
+> The `$project_id` variable is defined for documentation and education purposes. You can also embed the project ID in the URL instead of defining a variable.
 
 ```php
 $client = new Glamstack\GoogleCloud\ApiClient('test');
+$project_id = config('glamstack-google-cloud.connections.test.project_id');
 ```
 
-```php
-// Get list of IP addresses
-// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/list
-$response = $client->rest()->get('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses', []);
-```
+#### GET Request
+
+> Example: https://cloud.google.com/compute/docs/reference/rest/v1/addresses/list
 
 ```php
-// Get specific IP address
-// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/get
-$response = $client->rest()->get('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses/{resourceId}', []);
+$response = $client->rest()->get('https://compute.googleapis.com/compute/v1/projects/' . $project_id . '/regions/us-central1/addresses', []);
+```
+
+> Example: https://cloud.google.com/compute/docs/reference/rest/v1/addresses/get
+
+```php
+$resource_id = 'string';
+
+$response = $client->rest()->get('https://compute.googleapis.com/compute/v1/projects/' . $project_id . '/regions/us-central1/addresses/' . $resource_id, []);
 ```
 
 #### POST Request
 
+> Example: https://cloud.google.com/compute/docs/reference/rest/v1/addresses/insert
+
 ```php
-
-// Create a new IP address
-// https://cloud.google.com/compute/docs/reference/rest/v1/addresses/insert
-$client = new Glamstack\GoogleCloud\ApiClient('test');
-
 $request_data = [
-    'name' => string,
-    'description' => string,
-    'networkTier' => enum,
-    'ipVersion' => enum,
-    'addressType' => enum,
-    'subnetwork' => string,
-    'network' => string
+    'name' => 'string',
+    'description' => 'string',
+    'networkTier' => 'enum',
+    'ipVersion' => 'enum',
+    'addressType' => 'enum',
+    'subnetwork' => 'string',
+    'network' => 'string'
 ];
 
-$response = $client->rest()->post('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses', $request_data);
+$response = $client->rest()->post('https://compute.googleapis.com/compute/v1/projects/' . $project_id . '/regions/us-central1/addresses', $request_data);
+```
+
+#### PATCH and PUT Requests
+
+> Some PATCH requests use a [Field Mask](https://google.aip.dev/161) to provide a list of fields to be updated. This may need to be added to the `$request_data` array depending on the API endpoint documentation.
+
+```php
+$resource_id = 'string';
+
+// This is a different style of using variables that may be helpful for some
+// resources that have a full URI returned with the `POST` method
+$resource_uri = 'projects/' . $project_id . '/path/to/endpoint/' . $resource_id;
+
+$request_data = [
+    'description' => 'string',
+];
+```
+
+```php
+$response = $client->rest()->patch('https://compute.googleapis.com/compute/v1/' . $resource_uri, $request_data);
+```
+
+```php
+$response = $client->rest()->put('https://compute.googleapis.com/compute/v1/' . $resource_uri, $request_data);
 ```
 
 #### DELETE Request
 
-```php
-$client = new Glamstack\GoogleCloud\ApiClient('test');
+> Example: https://cloud.google.com/compute/docs/reference/rest/v1/addresses/delete
 
+```php
 $response = $client->rest()->delete('https://compute.googleapis.com/compute/v1/projects/' . config('glamstack-google-cloud.connections.test.project_id') . '/regions/us-central1/addresses/{resourceId}');
 ```
 
@@ -239,13 +254,17 @@ $response = $client->rest()->delete('https://compute.googleapis.com/compute/v1/p
 
 See the [API documentation](https://cloud.google.com/dns/docs/reference/v1/managedZones) to learn more.
 
-#### Get a List of Zones
+```php
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+```
+
+#### Get a list of Zones
 
 ```php
 $response = $client->dns()->managedZone()->list();
 ```
 
-#### Get a specific zone
+#### Get a specific Zone
 
 ```php
 $response = $client->dns()->managedZone()->get('testing-zone');
@@ -273,13 +292,17 @@ $response = $client->dns()->managedZone()->delete('testing-zone-3');
 
 See the [API documentation](https://cloud.google.com/dns/docs/reference/v1/resourceRecordSets) to learn more.
 
+```php
+$client = new Glamstack\GoogleCloud\ApiClient('test');
+```
+
 #### Get a List of Records
 
 ```php
 $response = $client->dns()->recordSet()->list('testing-zone');
 ```
 
-#### Get a specific record
+#### Get a specific Record
 
 ```php
 $response = $client->dns()->recordSet()->get(
@@ -313,7 +336,7 @@ $response = $client->dns()->RecordSet()->delete(
 
 ## Logging Configuration
 
-By default, we use the `single` channel for all logs that is configured in your application's `config/logging.php` file. This sends all Google Workspace log messages to the `storage/logs/laravel.log` file.
+By default, we use the `single` channel for all logs that is configured in your application's `config/logging.php` file. This sends all Google Cloud log messages to the `storage/logs/laravel.log` file.
 
 If you would like to see Google Cloud logs in a separate log file that is easier to triage without unrelated log messages, you can create a custom log channel.  For example, we recommend using the value of `glamstack-google-cloud`, however you can choose any name you would like.
 
@@ -341,7 +364,7 @@ Update the `channels.stack.channels` array to include the array key (ex.  `glams
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single','slack', 'glamstack-google-cloud'],
+            'channels' => ['single','slack','glamstack-google-cloud'],
             'ignore_exceptions' => false,
         ],
     ],
@@ -379,25 +402,24 @@ It is a recommended to store a copy of each JSON API key in your preferred passw
 
 ## Test Suite
 
-This SDK has test written with the [Pest](https://pestphp.com/) Framework.
+This SDK has feature and unit tests written with the [Pest](https://pestphp.com/) framework.
 
 ### Running The Test
 
-To run all test in the SDK from the project directory run the following
+You can run all tests in the SDK from the project directory.
 
 ```bash
+cd ~/Sites/google-cloud-sdk
 ./vendor/bin/pest
 ```
 
-Alternatively you can utilize build in composer commands to run the test:
+Alternatively, you can utilize build in composer commands to run the test.
 
 ```bash
 composer test
 ```
 
-or
-
-To run the test with a coverage report run the following:
+You can also run the tests with a coverage report.
 
 ```bash
 composer test-coverage
