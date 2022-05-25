@@ -1,0 +1,88 @@
+{
+    "name": "glamstack/google-cloud-sdk",
+    "description": "Google Cloud SDK for Laravel",
+    "keywords": [
+        "Glamstack",
+        "laravel",
+        "apiclient",
+        "gcp",
+        "cloud",
+        "google"
+    ],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Dillon Wheeler",
+            "email": "dwheeler@gitlab.com",
+            "homepage": "https://gitlab.com/dillonwheeler",
+            "role": "Owner"
+        },
+        {
+            "name": "Jeff Martin",
+            "email": "jmartin@gitlab.com",
+            "homepage": "https://gitlab.com/jeffersonmartin",
+            "role": "Owner"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "glamstack/google-auth-sdk": "*",
+        "guzzlehttp/guzzle": "^7.4",
+        "laravel/framework": "^9.13",
+        "spatie/laravel-package-tools": "^1.9",
+        "symfony/options-resolver": "^6.0"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^6.0",
+        "nunomaduro/larastan": "^2.0.1",
+        "orchestra/testbench": "^7.0",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-laravel": "^1.1",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "spatie/laravel-ray": "^1.26"
+    },
+    "autoload": {
+        "psr-4": {
+            "Glamstack\\GoogleCloud\\": "src",
+            "Glamstack\\GoogleCloud\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Glamstack\\GoogleCloud\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Glamstack\\GoogleCloud\\ApiClientServiceProvider"
+            ],
+            "aliases": {
+                "ApiClient": "Glamstack\\GoogleCloud\\Facades\\ApiClient"
+            }
+        }
+    },
+    "repositories": {
+        "local": {
+            "type": "path",
+            "url": "packages/glamstack/google-auth-sdk"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
