@@ -24,14 +24,11 @@ class ManagedZone extends BaseClient
      *
      * @see https://cloud.google.com/dns/docs/reference/v1/managedZones/get
      *
-     * @param string $managed_zone
-     *      The `ID` or `Name` of the managed zone to get information of
-     *
-     * @param array $optional_request_data
-     *      Optional request data to use with the GET request.
-     *      i.e. Utilizing the `fields` parameter
+     * @param array $request_data
+     *      Request data to send to the managed zone GET request
      *
      * @return object|string
+     * @throws \Exception
      */
     public function get(array $request_data = []): object|string
     {
@@ -120,7 +117,7 @@ class ManagedZone extends BaseClient
 
         return BaseClient::patchRequest($this->base_url . '/' .
             $request_data->path_parameters->project_id . '/managedZones/' .
-            $request_data->path_parameters->project_id,
+            $request_data->path_parameters->managed_zone,
             $request_data->request_data
         );
     }
@@ -134,6 +131,7 @@ class ManagedZone extends BaseClient
      *      Optional request data to pass into the DELETE request
      *
      * @return object|string
+     * @throws \Exception
      */
     public function delete(array $request_data = []): object|string
     {
