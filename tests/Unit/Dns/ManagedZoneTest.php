@@ -49,3 +49,14 @@ it('can delete a zone', function () {
     ]);
     expect($response->status->successful)->toBeTrue();
 });
+
+it('can update a zone', function(){
+    $client = new Glamstack\GoogleCloud\ApiClient('test');
+    $response = $client->dns()->managedZone()->update([
+        'managed_zone' => 'testing-zone',
+        'labels' => [
+            'dept' => 'testing-department'
+        ]
+    ]);
+    expect($response->status->code)->toBe(200);
+});
