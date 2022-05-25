@@ -33,7 +33,7 @@ class Method extends BaseClient
      *
      * @return object|string
      */
-    public function post(string $uri, array $request_data = []): object|string
+    public function post(string $uri, ?array $request_data = []): object|string
     {
         return BaseClient::postRequest($uri, $request_data);
     }
