@@ -135,7 +135,9 @@ return [
         'test' => [
             'project_id' => env('GOOGLE_CLOUD_TEST_PROJECT_ID'),
             'api_scopes' => [
-                'https://www.googleapis.com/auth/ndev.clouddns.readwrite'
+                'https://www.googleapis.com/auth/ndev.clouddns.readwrite',
+                'https://www.googleapis.com/auth/service.management',
+                'https://www.googleapis.com/auth/cloud-platform'
             ],
             'json_key_file_path' => storage_path('keys/glamstack-google-cloud/test.json'),
             'log_channels' => ['single']
