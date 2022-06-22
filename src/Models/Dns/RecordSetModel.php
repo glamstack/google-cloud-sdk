@@ -14,10 +14,7 @@ class RecordSetModel
                 'managed_zone' => 'required|string',
                 'project_id' => 'required|string',
                 'name' => 'required|string',
-                'type' => 'required|string|in:CNAME,A,AAAA',
-            ],
-            [
-                'type.in' => 'Available types are CNAME,A,AAAA'
+                'type' => 'required|string',
             ]
         );
 
@@ -40,16 +37,16 @@ class RecordSetModel
 
         $options['ttl'] = $options['ttl'] ?? $default_ttl;
 
-        $validator = Validator::make($options, [
-            'managed_zone' => 'required|string',
-            'project_id' => 'required|string',
-            'name' => 'required|string',
-            'ttl' => 'required|integer',
-            'type' => 'required|string|in:CNAME,A,AAAA',
-            'rrdatas' => 'required|array'
-        ],[
-            'type.in' => 'Available types are CNAME,A,AAAA'
-        ]);
+        $validator = Validator::make($options,
+            [
+                'managed_zone' => 'required|string',
+                'project_id' => 'required|string',
+                'name' => 'required|string',
+                'ttl' => 'required|integer',
+                'type' => 'required|string',
+                'rrdatas' => 'required|array'
+            ]
+        );
 
         if ($validator->fails()) {
             throw new Exception($validator->messages()->first());
@@ -86,10 +83,7 @@ class RecordSetModel
                 'managed_zone' => 'required|string',
                 'project_id' => 'required|string',
                 'name' => 'required|string',
-                'type' => 'required|string|in:CNAME,A,AAAA',
-            ],
-            [
-                'type.in' => 'Available types are CNAME,A,AAAA'
+                'type' => 'required|string',
             ]
         );
 
